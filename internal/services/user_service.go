@@ -17,17 +17,17 @@ func NewUserService(repo repositories.UserRepositoryInterface) *UserService {
 }
 
 func (s *UserService) GetProfile(ctx context.Context, userID uint) (*dto.UserProfile, error) {
-
+	return &dto.UserProfile{}, nil
 }
 
 func (s *UserService) UpdateProfile(ctx context.Context, userID uint, req dto.UpdateProfileRequest) error {
-
+	return nil
 }
 
 func (s *UserService) DeleteAccount(ctx context.Context, userID uint) error {
-
+	return nil
 }
 
 func (s *UserService) GetUserStats(ctx context.Context, userID uint) (*dto.UserStats, error) {
-
+	return &dto.UserStats{}, nil
 }

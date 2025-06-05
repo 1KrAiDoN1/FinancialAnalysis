@@ -25,7 +25,7 @@ func (a *AuthService) SignIn(ctx context.Context, req dto.LoginRequest) (*dto.Au
 }
 
 func (a *AuthService) Logout(ctx context.Context, req dto.LogoutRequest) error {
-
+	return nil
 }
 
 func (a *AuthService) GenerateRefreshToken() (*dto.AuthResponse, error) {
