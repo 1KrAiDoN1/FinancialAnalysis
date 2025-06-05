@@ -14,25 +14,25 @@ type Container struct {
 	DB *database.Database
 
 	// Repositories
-	AuthRepo     *repositories.AuthRepository
-	UserRepo     *repositories.UserRepository
-	CategoryRepo *repositories.CategoryRepository
-	ExpenseRepo  *repositories.ExpenseRepository
-	BudgetRepo   *repositories.BudgetRepository
+	AuthRepo     repositories.AuthRepositoryInterface
+	UserRepo     repositories.UserRepositoryInterface
+	CategoryRepo repositories.CategoryRepositoryInterface
+	ExpenseRepo  repositories.ExpenseRepositoryInterface
+	BudgetRepo   repositories.BudgetRepositoryInterface
 
 	// Services
-	AuthService     *services.AuthService
-	UserService     *services.UserService
-	CategoryService *services.CategoryService
-	ExpenseService  *services.ExpenseService
-	BudgetService   *services.BudgetService
+	AuthService     services.AuthServiceInterface
+	UserService     services.UserServiceInterface
+	CategoryService services.CategoryServiceInterface
+	ExpenseService  services.ExpenseServiceInterface
+	BudgetService   services.BudgetServiceInterface
 
 	// Handlers
-	AuthHandler     *handler.AuthHandler
-	UserHandler     *handler.UserHandler
-	CategoryHandler *handler.CategoryHandler
-	ExpenseHandler  *handler.ExpenseHandler
-	BudgetHandler   *handler.BudgetHandler
+	AuthHandler     handler.AuthHandlerInterface
+	UserHandler     handler.UserHandlerInterface
+	CategoryHandler handler.CategoryHandlerInterface
+	ExpenseHandler  handler.ExpenseHandlerInterface
+	BudgetHandler   handler.BudgetHandlerInterface
 }
 
 func NewContainer() (*Container, error) {
