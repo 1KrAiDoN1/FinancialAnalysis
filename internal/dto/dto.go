@@ -78,7 +78,7 @@ type AuthResponse struct {
 
 // UserInfo - краткая информация о пользователе для ответа
 type UserInfo struct {
-	ID        uint   `json:"id"`
+	// ID        uint   `json:"id"`
 	Email     string `json:"email"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
@@ -88,7 +88,7 @@ type UserInfo struct {
 
 // UserProfile - полная информация профиля
 type UserProfile struct {
-	ID              uint       `json:"id"`
+	// ID              uint       `json:"id"`
 	Email           string     `json:"email"`
 	FirstName       string     `json:"first_name"`
 	LastName        string     `json:"last_name"`
@@ -141,15 +141,12 @@ type CategoryExpense struct {
 
 // CreateCategoryRequest - создание категории
 type CreateCategoryRequest struct {
-	Name        string  `json:"name" validate:"required,min=1,max=100" example:"Food"`
-	Description *string `json:"description,omitempty" validate:"omitempty,max=500"`
-	Color       string  `json:"color" validate:"required,hexcolor" example:"#FF5733"`
-	Icon        *string `json:"icon,omitempty" validate:"omitempty,max=50" example:"🍔"`
+	Name string `json:"category_name" validate:"required,min=1,max=100"`
 }
 
 // UpdateCategoryRequest - обновление категории
 type UpdateCategoryRequest struct {
-	Name        *string `json:"name,omitempty" validate:"omitempty,min=1,max=100"`
+	Name        *string `json:"category_name,omitempty" validate:"omitempty,min=1,max=100"`
 	Description *string `json:"description,omitempty" validate:"omitempty,max=500"`
 	Color       *string `json:"color,omitempty" validate:"omitempty,hexcolor"`
 	Icon        *string `json:"icon,omitempty" validate:"omitempty,max=50"`
@@ -172,10 +169,9 @@ type CategoryResponse struct {
 	TotalAmount   float64 `json:"total_amount,omitempty"`
 }
 
-// CategoriesListResponse - список категорий с пагинацией
+// CategoriesListResponse
 type CategoriesListResponse struct {
 	Categories []CategoryResponse `json:"categories"`
-	Pagination PaginationResponse `json:"pagination"`
 }
 
 // Запросы для расходов
