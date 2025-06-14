@@ -2,7 +2,7 @@ package main
 
 import (
 	"finance/internal/container"
-	"finance/internal/server"
+	server "finance/internal/http-server"
 	"log"
 )
 
