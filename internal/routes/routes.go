@@ -22,7 +22,6 @@ func SetupExpenseRoutes(router *gin.RouterGroup, expenseHandler handler.ExpenseH
 		expenses.POST("", expenseHandler.CreateExpense)
 		expenses.GET("", expenseHandler.GetExpenses)
 		expenses.GET("/:id", expenseHandler.GetExpense)
-		expenses.PUT("/:id", expenseHandler.UpdateExpense)
 		expenses.DELETE("/:id", expenseHandler.DeleteExpense)
 		expenses.GET("/analytics", expenseHandler.GetAnalytics)
 	}
@@ -33,7 +32,7 @@ func SetupCategoryRoutes(router *gin.RouterGroup, categoryHandler handler.Catego
 	{
 		categories.POST("", categoryHandler.CreateCategory)
 		categories.GET("", categoryHandler.GetCategories)
-		categories.PUT("/:id", categoryHandler.UpdateCategory)
+		categories.GET("/:id", categoryHandler.GetCategoryByID)
 		categories.DELETE("/:id", categoryHandler.DeleteCategory)
 	}
 }
@@ -52,7 +51,6 @@ func SetupUserRoutes(router *gin.RouterGroup, userHandler handler.UserHandlerInt
 	users := router.Group("/user")
 	{
 		users.GET("/profile", userHandler.GetProfile)
-		users.PUT("/profile", userHandler.UpdateProfile)
 		users.DELETE("/account", userHandler.DeleteAccount)
 		users.GET("/stats", userHandler.GetStats)
 	}
