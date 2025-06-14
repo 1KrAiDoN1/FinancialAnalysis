@@ -3,25 +3,32 @@ package repositories
 import (
 	"context"
 	"finance/internal/models"
-
-	"github.com/jackc/pgx/v5/pgxpool"
+	storage "finance/internal/storages"
 )
 
 type AuthRepository struct {
-	pool *pgxpool.Pool
+	storage storage.AuthStorageInterface
 }
 
-func NewAuthRepository(pool *pgxpool.Pool) *AuthRepository { //конструктор
+func NewAuthRepository(storage storage.AuthStorageInterface) *AuthRepository { //конструктор
 	return &AuthRepository{
-		pool: pool,
+		storage: storage,
 	}
 }
 
-func (r *AuthRepository) CreateUser(ctx context.Context, user *models.User) (int, error) {
+func (r *AuthRepository) CreateUser(ctx context.Context, user *models.User) (*models.User, error) {
 
-	return 0, nil // логика для сохранения пользователя в базе данных и возвращение id пользователя
+	return &models.User{}, nil // логика для сохранения пользователя в базе данных и возвращение id пользователя
 }
 
-// func (r *AuthRepository) GetUser(username, password string) (models.User, error) {
-// 	return models.User{}, nil // логика для получения пользователя из базы данных по username и password
-// }
+func (r *AuthRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	return &models.User{}, nil // логика для получения пользователя по email
+}
+
+func (r *AuthRepository) GetUserByID(ctx context.Context, userID uint) (*models.User, error) {
+	return &models.User{}, nil // логика для получения пользователя по id
+}
+
+func (r *AuthRepository) UserExistsByEmail(ctx context.Context, email string) (bool, error) {
+	return true, nil
+}

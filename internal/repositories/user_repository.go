@@ -1,13 +1,26 @@
 package repositories
 
-import "github.com/jackc/pgx/v5/pgxpool"
+import (
+	"context"
+
+	"finance/internal/models"
+	storage "finance/internal/storages"
+)
 
 type UserRepository struct {
-	pool *pgxpool.Pool
+	storage storage.UserStorageInterface
 }
 
-func NewUserRepository(pool *pgxpool.Pool) *UserRepository { //конструктор
+func NewUserRepository(storage storage.UserStorageInterface) *UserRepository { //конструктор
 	return &UserRepository{
-		pool: pool,
+		storage: storage,
 	}
+}
+
+func (u *UserRepository) DeleteUser(ctx context.Context, id uint) error {
+
+}
+
+func (u *UserRepository) GetUserStats(ctx context.Context, userID uint) (*models.UserStats, error) {
+
 }

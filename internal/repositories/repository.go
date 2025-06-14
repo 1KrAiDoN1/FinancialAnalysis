@@ -1,20 +1,21 @@
 package repositories
 
-// "finance/internal/models"
+import storage "finance/internal/storages"
 
-// "github.com/jackc/pgx/v5/pgxpool"
+type Repositories struct {
+	AuthRepositoryInterface
+	BudgetRepositoryInterface
+	CategoryRepositoryInterface
+	ExpenseRepositoryInterface
+	UserRepositoryInterface
+}
 
-// type Authorization interface {
-// 	CreateUser(user models.User) (int, error)
-// 	GetUser(username, password string) (models.User, error)
-// }
-
-// type Repository struct {
-// 	Authorization
-// }
-
-// func NewRepository(pool *pgxpool.Pool) *Repository {
-// 	return &Repository{
-// 		Authorization: NewAuthRepository(pool),
-// 	}
-// }
+func NewRepositories(storage *storage.Storages) *Repositories {
+	return &Repositories{
+		AuthRepositoryInterface:     NewAuthRepository(storage.AuthStorageInterface),
+		BudgetRepositoryInterface:   NewBudgetRepository(storage.BudgetStorageInterface),
+		CategoryRepositoryInterface: NewCategoryRepository(storage.CategoryStorageInterface),
+		ExpenseRepositoryInterface:  NewExpenseRepository(storage.ExpenseStorageInterface),
+		UserRepositoryInterface:     NewUserRepository(storage.UserStorageInterface),
+	}
+}
