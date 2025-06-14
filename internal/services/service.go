@@ -1,20 +1,22 @@
 package services
 
-// type Service struct { // создаем структуру, которая будет содержать интерфейсы
-// 	AuthService
-// 	ExpenseService
-// 	CategoryService
-// 	UserService
-// 	BudgetService
-// }
+import "finance/internal/repositories"
 
-// func NewService(repo *repositories.Repository) *Service {
-// 	return &Service{
-// 		AuthService:     NewAuthService(repo),
-// 		ExpenseService:  NewExpenseService(repo),
-// 		CategoryService: NewCategoryService(repo),
-// 		UserService:     NewUserService(repo),
-// 		BudgetService:   NewBudgetService(repo),
-// 	}
+type Services struct { // создаем структуру, которая будет содержать интерфейсы
+	AuthServiceInterface
+	ExpenseServiceInterface
+	CategoryServiceInterface
+	UserServiceInterface
+	BudgetServiceInterface
+}
 
-// }
+func NewServices(repo *repositories.Repositories) *Services {
+	return &Services{
+		AuthServiceInterface:     NewAuthService(repo.AuthRepositoryInterface),
+		BudgetServiceInterface:   NewBudgetService(repo.BudgetRepositoryInterface),
+		ExpenseServiceInterface:  NewExpenseService(repo.ExpenseRepositoryInterface),
+		CategoryServiceInterface: NewCategoryService(repo.CategoryRepositoryInterface),
+		UserServiceInterface:     NewUserService(repo.UserRepositoryInterface),
+	}
+
+}

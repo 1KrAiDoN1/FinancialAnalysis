@@ -24,23 +24,21 @@ type BudgetServiceInterface interface {
 }
 
 type CategoryServiceInterface interface {
-	CreateCategory(ctx context.Context, userID uint, req dto.CreateCategoryRequest) (*dto.CategoryResponse, error)
-	GetUserCategories(ctx context.Context, userID uint) ([]*dto.CategoryResponse, error)
-	UpdateCategory(ctx context.Context, userID uint, categoryID uint, req dto.UpdateCategoryRequest) error
-	DeleteCategory(ctx context.Context, userID uint, categoryID uint) error
+	CreateCategory(ctx context.Context, userID uint, req dto.CreateCategoryRequest) (dto.CategoryResponse, error)
+	GetUserCategories(ctx context.Context, userID uint) ([]dto.CategoryResponse, error)
+	GetCategoryByID(ctx context.Context, userID uint, categoryID int) (dto.CategoryResponse, error)
+	DeleteCategory(ctx context.Context, userID uint, categoryID int) error
 }
 
 type ExpenseServiceInterface interface {
 	CreateExpense(ctx context.Context, userID uint, req dto.CreateExpenseRequest) (*dto.ExpenseResponse, error)
 	GetUserExpenses(ctx context.Context, userID uint, filter dto.ExpenseFilter) ([]*dto.ExpenseResponse, error)
-	UpdateExpense(ctx context.Context, userID uint, expenseID uint, req dto.UpdateExpenseRequest) error
 	DeleteExpense(ctx context.Context, userID uint, expenseID uint) error
 	GetExpenseAnalytics(ctx context.Context, userID uint, period string) (*dto.ExpenseAnalytics, error)
 }
 
 type UserServiceInterface interface {
-	GetProfile(ctx context.Context, userID uint) (*dto.UserProfile, error)
-	UpdateProfile(ctx context.Context, userID uint, req dto.UpdateProfileRequest) error
+	GetProfile(ctx context.Context, userID uint) (dto.UserProfile, error)
 	DeleteAccount(ctx context.Context, userID uint) error
-	GetUserStats(ctx context.Context, userID uint) (*dto.UserStats, error)
+	GetUserStats(ctx context.Context, userID uint) (dto.UserStats, error)
 }
