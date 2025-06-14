@@ -20,22 +20,20 @@ type BudgetHandlerInterface interface {
 type CategoryHandlerInterface interface {
 	CreateCategory(c *gin.Context)
 	GetCategories(c *gin.Context)
-	UpdateCategory(c *gin.Context)
 	DeleteCategory(c *gin.Context)
+	GetCategoryByID(c *gin.Context)
 }
 
 type ExpenseHandlerInterface interface {
 	CreateExpense(c *gin.Context)
 	GetExpenses(c *gin.Context)
 	GetExpense(c *gin.Context)
-	UpdateExpense(c *gin.Context)
 	DeleteExpense(c *gin.Context)
 	GetAnalytics(c *gin.Context)
 }
 
 type UserHandlerInterface interface {
 	GetProfile(c *gin.Context)
-	UpdateProfile(c *gin.Context)
 	GetStats(c *gin.Context)
 	DeleteAccount(c *gin.Context)
 }

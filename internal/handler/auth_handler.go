@@ -67,8 +67,11 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
 	defer cancel()
 	token := c.GetHeader("Authorization")
+	req := dto.LogoutRequest{
+		AccessToken: token,
+	}
 
-	if err := h.authService.Logout(ctx, token); err != nil {
+	if err := h.authService.Logout(ctx, req); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to logout"})
 		return
 	}
