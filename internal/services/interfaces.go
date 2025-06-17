@@ -31,10 +31,11 @@ type CategoryServiceInterface interface {
 }
 
 type ExpenseServiceInterface interface {
-	CreateExpense(ctx context.Context, userID uint, req dto.CreateExpenseRequest) (*dto.ExpenseResponse, error)
-	GetUserExpenses(ctx context.Context, userID uint, filter dto.ExpenseFilter) ([]*dto.ExpenseResponse, error)
-	DeleteExpense(ctx context.Context, userID uint, expenseID uint) error
-	GetExpenseAnalytics(ctx context.Context, userID uint, period string) (*dto.ExpenseAnalytics, error)
+	CreateExpense(ctx context.Context, userID uint, req dto.CreateExpenseRequest) (dto.ExpenseResponse, error)
+	GetUserExpense(ctx context.Context, userID uint, expenseID int) (dto.ExpenseResponse, error)
+	GetUserExpenses(ctx context.Context, userID uint) ([]dto.ExpenseResponse, error)
+	DeleteExpense(ctx context.Context, userID uint, expenseID int) error
+	GetExpenseAnalytics(ctx context.Context, userID uint, period dto.ExpensePeriod) (dto.ExpenseAnalytics, error)
 }
 
 type UserServiceInterface interface {
