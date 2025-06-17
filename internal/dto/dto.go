@@ -212,22 +212,21 @@ type ExpenseFilter struct {
 
 // ExpenseResponse - информация о расходе
 type ExpenseResponse struct {
-	ID          uint             `json:"id"`
-	CategoryID  uint             `json:"category_id"`
-	Category    CategoryResponse `json:"category"`
-	Amount      float64          `json:"amount"`
-	Description *string          `json:"description,omitempty"`
-	Date        time.Time        `json:"date"`
-	Tags        []string         `json:"tags,omitempty"`
-	CreatedAt   time.Time        `json:"created_at"`
-	UpdatedAt   time.Time        `json:"updated_at"`
+	ID           uint             `json:"id"`
+	CategoryID   uint             `json:"category_id"`
+	CategoryName string           `json:"category_name"`
+	Category     CategoryResponse `json:"category"`
+	Amount       float64          `json:"amount"`
+	Description  *string          `json:"description,omitempty"`
+	Date         time.Time        `json:"date"`
+	Tags         []string         `json:"tags,omitempty"`
+	CreatedAt    time.Time        `json:"created_at"`
+	UpdatedAt    time.Time        `json:"updated_at"`
 }
 
 // ExpensesListResponse - список расходов с пагинацией
 type ExpensesListResponse struct {
-	Expenses   []ExpenseResponse  `json:"expenses"`
-	Pagination PaginationResponse `json:"pagination"`
-	Summary    ExpenseSummary     `json:"summary"`
+	Expenses []ExpenseResponse `json:"expenses"`
 }
 
 // ExpenseSummary - сводка по расходам
@@ -237,6 +236,10 @@ type ExpenseSummary struct {
 	AverageAmount float64 `json:"average_amount"`
 	MinAmount     float64 `json:"min_amount"`
 	MaxAmount     float64 `json:"max_amount"`
+}
+
+type ExpensePeriod struct {
+	Period string `json:"period"`
 }
 
 // ExpenseAnalytics - аналитика расходов
