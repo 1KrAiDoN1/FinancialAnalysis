@@ -17,17 +17,18 @@ func NewBudgetRepository(storage storage.BudgetStorageInterface) *BudgetReposito
 }
 
 func (b *BudgetRepository) CreateBudget(ctx context.Context, budget *models.Budget) error {
+	return nil
 
 }
 
 func (b *BudgetRepository) GetBudgetByID(ctx context.Context, id uint) (*models.Budget, error) {
-
+	return nil, nil
 }
 
 func (b *BudgetRepository) GetBudgetByUserID(ctx context.Context, userID uint) ([]*models.Budget, error) {
-
+	return nil, nil
 }
 
 func (b *BudgetRepository) DeleteBudget(ctx context.Context, id uint) error {
-
+	return nil
 }

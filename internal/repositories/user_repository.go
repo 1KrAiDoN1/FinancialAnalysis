@@ -18,9 +18,9 @@ func NewUserRepository(storage storage.UserStorageInterface) *UserRepository { /
 }
 
 func (u *UserRepository) DeleteUser(ctx context.Context, id uint) error {
-
+	return nil
 }
 
 func (u *UserRepository) GetUserStats(ctx context.Context, userID uint) (*models.UserStats, error) {
-
+	return nil, nil
 }
