@@ -16,18 +16,18 @@ func NewBudgetService(repo repositories.BudgetRepositoryInterface) *BudgetServic
 	}
 }
 
-func (b *BudgetService) CreateBudget(ctx context.Context, userID uint, req dto.CreateBudgetRequest) (*dto.BudgetResponse, error) {
-	return &dto.BudgetResponse{}, nil
+func (b *BudgetService) CreateBudget(ctx context.Context, userID uint, req dto.CreateBudgetRequest) (dto.BudgetResponse, error) {
+	return dto.BudgetResponse{}, nil
 }
 
-func (b *BudgetService) GetUserBudgets(ctx context.Context, userID uint) ([]*dto.BudgetResponse, error) {
-	return []*dto.BudgetResponse{}, nil
+func (b *BudgetService) GetUserBudgets(ctx context.Context, userID uint) ([]dto.BudgetResponse, error) {
+	return []dto.BudgetResponse{}, nil
 }
 
-func (b *BudgetService) UpdateBudget(ctx context.Context, userID uint, budgetID uint, req dto.UpdateBudgetRequest) error {
+func (b *BudgetService) UpdateBudget(ctx context.Context, userID uint, budgetID int, req dto.UpdateBudgetRequest) error {
 	return nil
 }
 
-func (b *BudgetService) DeleteBudget(ctx context.Context, userID uint, budgetID uint) error {
+func (b *BudgetService) DeleteBudget(ctx context.Context, userID uint, budgetID int) error {
 	return nil
 }
