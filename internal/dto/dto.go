@@ -319,8 +319,7 @@ type BudgetResponse struct {
 
 // BudgetsListResponse - список бюджетов
 type BudgetsListResponse struct {
-	Budgets    []BudgetResponse   `json:"budgets"`
-	Pagination PaginationResponse `json:"pagination"`
+	Budgets []BudgetResponse `json:"budgets"`
 }
 
 // BudgetStatus - статус бюджета
