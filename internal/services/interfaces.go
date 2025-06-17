@@ -16,10 +16,10 @@ type AuthServiceInterface interface {
 }
 
 type BudgetServiceInterface interface {
-	CreateBudget(ctx context.Context, userID uint, req dto.CreateBudgetRequest) (*dto.BudgetResponse, error)
-	GetUserBudgets(ctx context.Context, userID uint) ([]*dto.BudgetResponse, error)
-	UpdateBudget(ctx context.Context, userID uint, budgetID uint, req dto.UpdateBudgetRequest) error
-	DeleteBudget(ctx context.Context, userID uint, budgetID uint) error
+	CreateBudget(ctx context.Context, userID uint, req dto.CreateBudgetRequest) (dto.BudgetResponse, error)
+	GetUserBudgets(ctx context.Context, userID uint) ([]dto.BudgetResponse, error)
+	UpdateBudget(ctx context.Context, userID uint, budgetID int, req dto.UpdateBudgetRequest) error
+	DeleteBudget(ctx context.Context, userID uint, budgetID int) error
 	//CheckBudgetStatus(ctx context.Context, userID uint) ([]*dto.BudgetStatus, error)
 }
 
