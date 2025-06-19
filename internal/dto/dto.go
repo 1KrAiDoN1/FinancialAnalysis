@@ -71,8 +71,6 @@ type LogoutRequest struct {
 type AuthResponse struct {
 	AccessToken  string   `json:"access_token"`
 	RefreshToken string   `json:"refresh_token"`
-	TokenType    string   `json:"token_type" example:"Bearer"`
-	ExpiresIn    int      `json:"expires_in" example:"3600"`
 	User         UserInfo `json:"user"`
 }
 
