@@ -11,6 +11,7 @@ type AuthRepositoryInterface interface {
 	CreateUser(ctx context.Context, user *models.User) (*models.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 	GetUserByID(ctx context.Context, userID uint) (*models.User, error)
+	CheckUserVerification(ctx context.Context, email string, hashpassword string) (*models.User, error)
 	// Проверка существования
 	UserExistsByEmail(ctx context.Context, email string) (bool, error)
 }

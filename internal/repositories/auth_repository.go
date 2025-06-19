@@ -25,6 +25,9 @@ func (r *AuthRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 	return &models.User{}, nil // логика для получения пользователя по email
 }
 
+func (r *AuthRepository) CheckUserVerification(ctx context.Context, email string, hashpassword string) (*models.User, error) {
+	return &models.User{}, nil // логика для проверки пользователя
+}
 func (r *AuthRepository) GetUserByID(ctx context.Context, userID uint) (*models.User, error) {
 	return &models.User{}, nil // логика для получения пользователя по id
 }

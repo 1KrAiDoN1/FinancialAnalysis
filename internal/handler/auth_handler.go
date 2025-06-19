@@ -30,10 +30,6 @@ func (h *AuthHandler) SignUp(c *gin.Context) {
 	}
 
 	user, err := h.authService.SignUp(ctx, userReg)
-	if err == context.DeadlineExceeded {
-		c.JSON(408, gin.H{"error": "request timeout"})
-		return
-	}
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -77,4 +73,5 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
+
 }
