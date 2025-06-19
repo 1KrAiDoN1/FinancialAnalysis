@@ -3,3 +3,5 @@
 **/.DS_Store
 /.env
 **/.env
+internal/storages/database/DB_Config.env
+internal/storages/database/hash.env
