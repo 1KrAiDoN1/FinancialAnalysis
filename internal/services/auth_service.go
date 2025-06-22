@@ -2,14 +2,15 @@ package services
 
 import (
 	"context"
+	"crypto/rand"
 	"crypto/sha1"
+	"encoding/base64"
 	"errors"
 	"finance/internal/dto"
 	"finance/internal/models"
 	"finance/internal/repositories"
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
 	"strconv"
 	"time"
@@ -96,18 +97,17 @@ func (a *AuthService) SignIn(ctx context.Context, req dto.LoginRequest) (*dto.Au
 	}, nil
 }
 
-func (a *AuthService) Logout(ctx context.Context, req dto.LogoutRequest) error {
-	return nil
-}
-
 func (a *AuthService) GenerateRefreshToken() (dto.RefreshTokenRequest, error) {
 	refresh_token := make([]byte, 32)
-	s := rand.NewSource(time.Now().Unix())
-	r := rand.New(s)
-	if _, err := r.Read(refresh_token); err != nil {
+	if _, err := rand.Read(refresh_token); err != nil {
 		return dto.RefreshTokenRequest{}, err
 	}
-	return dto.RefreshTokenRequest{}, nil
+	token := base64.URLEncoding.EncodeToString(refresh_token)
+
+	return dto.RefreshTokenRequest{
+		RefreshToken: token,
+		ExpiresAt:    time.Now().Add(RefreshTokenTTL),
+	}, nil
 }
 
 func (a *AuthService) GenerateAccessToken(userID int) (dto.AccessTokenRequest, error) {
@@ -131,11 +131,51 @@ func (a *AuthService) GenerateAccessToken(userID int) (dto.AccessTokenRequest, e
 	}
 	return dto.AccessTokenRequest{
 		AccessToken: tokenString,
+		ExpiresAt:   time.Now().Add(JWTokenTTL),
 	}, nil
 }
 
-func (a *AuthService) ValidateToken(ctx context.Context, req dto.AccessTokenRequest) (*dto.UserInfo, error) {
-	return &dto.UserInfo{}, nil
+func (a *AuthService) ValidateToken(ctx context.Context, req dto.AccessTokenRequest) (*dto.UserID, error) {
+
+	err := godotenv.Load("/Users/pavelvasilev/Desktop/FinancialAnalysis/internal/storages/database/hash.env")
+	if err != nil {
+		return &dto.UserID{}, fmt.Errorf("failed to load environment file: %w", err)
+	}
+
+	secretSignInKey := os.Getenv("SECRET_SIGNINKEY")
+	if secretSignInKey == "" {
+		return &dto.UserID{}, fmt.Errorf("SECRET_SIGNINKEY environment variable is not set")
+	}
+
+	token, err := jwt.ParseWithClaims(req.AccessToken, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+		// Проверяем метод подписи
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(secretSignInKey), nil
+	})
+
+	if err != nil {
+		return &dto.UserID{}, fmt.Errorf("invalid token: %w", err)
+	}
+
+	// Проверяем валидность claims
+	if claims, ok := token.Claims.(*jwt.RegisteredClaims); ok && token.Valid {
+		if claims.ExpiresAt != nil && claims.ExpiresAt.Time.Before(time.Now()) {
+			return &dto.UserID{}, err
+		}
+
+		userID, err := strconv.Atoi(claims.Subject)
+		if err != nil {
+			return &dto.UserID{}, fmt.Errorf("invalid user ID in access token: %w", err)
+		}
+
+		return &dto.UserID{
+			UserID: userID,
+		}, nil
+	}
+
+	return nil, fmt.Errorf("invalid token claims")
 }
 
 func HashPassword(Password string) (string, error) {
@@ -153,4 +193,16 @@ func HashPassword(Password string) (string, error) {
 	}
 	return fmt.Sprintf("%x", hash.Sum([]byte(secretString))), nil
 
+}
+
+func (a *AuthService) GetUserIDbyRefreshToken(refresh_token string) (int, error) {
+	return 0, nil
+}
+
+func (a *AuthService) RemoveOldRefreshToken(userID int) error {
+	return nil
+}
+
+func (a *AuthService) SaveNewRefreshToken(token dto.RefreshTokenRequest) error {
+	return nil
 }

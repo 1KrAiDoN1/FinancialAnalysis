@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"finance/internal/dto"
+	"finance/internal/middleware"
 	"finance/internal/services"
 	"net/http"
 	"time"
@@ -52,26 +53,38 @@ func (h *AuthHandler) SignIn(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
+	middleware.SetRefreshTokenCookie(c, token.RefreshToken)
 
-	c.JSON(http.StatusOK, gin.H{
-		"token": token,
-		"type":  "Bearer",
-	})
+	c.Header("Authorization", "Bearer "+token.AccessToken)
+	c.JSON(http.StatusOK, dto.AuthResponse{
+		AccessToken:  token.AccessToken,
+		RefreshToken: token.RefreshToken,
+		User: dto.UserInfo{
+			Email:     token.User.Email,
+			FirstName: token.User.FirstName,
+			LastName:  token.User.LastName,
+		},
+	},
+	)
 }
 
 func (h *AuthHandler) Logout(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
-	defer cancel()
-	token := c.GetHeader("Authorization")
-	req := dto.LogoutRequest{
-		AccessToken: token,
-	}
-
-	if err := h.authService.Logout(ctx, req); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to logout"})
+	// ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
+	// defer cancel()
+	refresh_token, err := c.Cookie("refresh_token")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
-
+	c.SetCookie(
+		"refresh_token",
+		refresh_token,
+		-1,
+		"/",
+		"",
+		true,
+		true,
+	)
 	c.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
 
 }

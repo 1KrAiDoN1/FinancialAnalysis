@@ -11,7 +11,6 @@ func SetupAuthRoutes(router *gin.RouterGroup, authHandler handler.AuthHandlerInt
 	{
 		auth.POST("/sign-up", authHandler.SignUp)
 		auth.POST("/sign-in", authHandler.SignIn)
-		//auth.POST("/refresh", authHandler.RefreshToken)
 		auth.POST("/logout", authHandler.Logout)
 	}
 }

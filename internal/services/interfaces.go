@@ -8,11 +8,12 @@ import (
 type AuthServiceInterface interface {
 	SignUp(ctx context.Context, req dto.RegisterRequest) (*dto.UserInfo, error)
 	SignIn(ctx context.Context, req dto.LoginRequest) (*dto.AuthResponse, error)
-	Logout(ctx context.Context, req dto.LogoutRequest) error
 	GenerateRefreshToken() (dto.RefreshTokenRequest, error)
 	GenerateAccessToken(userID int) (dto.AccessTokenRequest, error)
-	ValidateToken(ctx context.Context, req dto.AccessTokenRequest) (*dto.UserInfo, error)
-	// ValidateToken(ctx context.Context, token string) (*models.User, error)
+	ValidateToken(ctx context.Context, req dto.AccessTokenRequest) (*dto.UserID, error)
+	GetUserIDbyRefreshToken(refresh_token string) (int, error)
+	RemoveOldRefreshToken(userID int) error
+	SaveNewRefreshToken(token dto.RefreshTokenRequest) error
 }
 
 type BudgetServiceInterface interface {

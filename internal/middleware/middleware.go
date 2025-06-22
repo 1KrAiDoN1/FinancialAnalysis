@@ -17,35 +17,88 @@ func AuthMiddleware(authService services.AuthServiceInterface) gin.HandlerFunc {
 		ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
 		defer cancel()
 		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
-			c.Abort()
-			return
+		if authHeader != "" {
+			// Извлекаем токен из заголовка "Bearer TOKEN"
+			tokenParts := strings.Split(authHeader, " ")
+			if len(tokenParts) != 2 || tokenParts[0] != "Bearer" {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authorization header format"})
+				c.Abort()
+				return
+			} else {
+				req := dto.AccessTokenRequest{
+					AccessToken: tokenParts[1],
+				}
+
+				// Валидация токена через сервис
+				userID, err := authService.ValidateToken(ctx, req)
+				if err != nil {
+					c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+					c.Abort()
+					return
+				}
+				c.Set("user_id", userID)
+				c.Next()
+				return
+			}
+		} else {
+			refresh_token, err := c.Cookie("refresh_token")
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "Refresh token is required"})
+				c.Abort()
+				return
+			}
+			if refresh_token != "" {
+				userID, err := authService.GetUserIDbyRefreshToken(refresh_token)
+				if err != nil {
+					c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid refresh token"})
+					c.Abort()
+					return
+				}
+				if userID != 0 {
+					err = authService.RemoveOldRefreshToken(userID)
+					if err != nil {
+						c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove old refresh token"})
+						c.Abort()
+						return
+					}
+					new_access_token, err := authService.GenerateAccessToken(userID)
+					if err != nil {
+						c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate new access token"})
+						c.Abort()
+						return
+					}
+					new_refresh_token, err := authService.GenerateRefreshToken()
+					if err != nil {
+						c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate new refresh token"})
+						c.Abort()
+						return
+					}
+					err = authService.SaveNewRefreshToken(new_refresh_token)
+					if err != nil {
+						c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save new refresh token"})
+						c.Abort()
+						return
+					}
+					c.Header("Authorization", "Bearer "+new_access_token.AccessToken)
+					SetRefreshTokenCookie(c, new_refresh_token.RefreshToken)
+					c.Set("user_id", userID)
+					c.Next()
+					return
+
+				} else {
+					c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization is required"})
+					c.Abort()
+					return
+				}
+
+			} else {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization is required"})
+				c.Abort()
+				return
+
+			}
 		}
 
-		// Извлекаем токен из заголовка "Bearer TOKEN"
-		tokenParts := strings.Split(authHeader, " ")
-		if len(tokenParts) != 2 || tokenParts[0] != "Bearer" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authorization header format"})
-			c.Abort()
-			return
-		}
-
-		req := dto.AccessTokenRequest{
-			AccessToken: tokenParts[1],
-		}
-
-		// Валидация токена через сервис
-		userID, err := authService.ValidateToken(ctx, req)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-			c.Abort()
-			return
-		}
-
-		// Сохраняем userID в контексте для использования в handlers
-		c.Set("userID", userID)
-		c.Next()
 	})
 }
 
@@ -56,4 +109,16 @@ func GetUserId(c *gin.Context) (uint, error) {
 		return 0, errors.New("user ID not found in context")
 	}
 	return userID.(uint), nil
+}
+
+func SetRefreshTokenCookie(c *gin.Context, refresh_token string) {
+	c.SetCookie(
+		"refresh_token",
+		refresh_token,
+		int(services.RefreshTokenTTL.Seconds()),
+		"/",
+		"",
+		true,
+		true,
+	)
 }

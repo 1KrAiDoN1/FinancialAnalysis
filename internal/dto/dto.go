@@ -53,11 +53,13 @@ type LoginRequest struct {
 
 // RefreshTokenRequest - запрос обновления токена
 type RefreshTokenRequest struct {
-	RefreshToken string `json:"refresh_token" validate:"required"`
+	RefreshToken string    `json:"refresh_token" validate:"required"`
+	ExpiresAt    time.Time `json:"expires_at"`
 }
 
 type AccessTokenRequest struct {
-	AccessToken string `json:"access_token" validate:"required"`
+	AccessToken string    `json:"access_token" validate:"required"`
+	ExpiresAt   time.Time `json:"expires_at"`
 }
 
 type LogoutRequest struct {
@@ -80,6 +82,9 @@ type UserInfo struct {
 	Email     string `json:"email"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
+}
+type UserID struct {
+	UserID int `json:"id"`
 }
 
 // Профиль пользователя
