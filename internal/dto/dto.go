@@ -92,25 +92,10 @@ type UserID struct {
 // UserProfile - полная информация профиля
 type UserProfile struct {
 	// ID              uint       `json:"id"`
-	Email           string     `json:"email"`
-	FirstName       string     `json:"first_name"`
-	LastName        string     `json:"last_name"`
-	Avatar          *string    `json:"avatar,omitempty"`
-	Currency        string     `json:"currency" example:"USD"`
-	Timezone        string     `json:"timezone" example:"UTC"`
-	CreatedAt       time.Time  `json:"created_at"`
-	UpdatedAt       time.Time  `json:"updated_at"`
-	LastLoginAt     *time.Time `json:"last_login_at,omitempty"`
-	IsEmailVerified bool       `json:"is_email_verified"`
-}
-
-// UpdateProfileRequest - обновление профиля
-type UpdateProfileRequest struct {
-	FirstName *string `json:"first_name,omitempty" validate:"omitempty,min=2,max=50"`
-	LastName  *string `json:"last_name,omitempty" validate:"omitempty,min=2,max=50"`
-	Avatar    *string `json:"avatar,omitempty" validate:"omitempty,url"`
-	Currency  *string `json:"currency,omitempty" validate:"omitempty,len=3"`
-	Timezone  *string `json:"timezone,omitempty"`
+	Email     string    `json:"email"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 // ChangePasswordRequest - смена пароля
@@ -128,8 +113,6 @@ type UserStats struct {
 	MonthlyExpenses float64           `json:"monthly_expenses"`
 	WeeklyExpenses  float64           `json:"weekly_expenses"`
 	TopCategories   []CategoryExpense `json:"top_categories"`
-	RecentExpenses  []ExpenseResponse `json:"recent_expenses"`
-	BudgetAlerts    []BudgetAlert     `json:"budget_alerts"`
 }
 
 // CategoryExpense - расходы по категории
@@ -145,14 +128,6 @@ type CategoryExpense struct {
 // CreateCategoryRequest - создание категории
 type CreateCategoryRequest struct {
 	Name string `json:"category_name" validate:"required,min=1,max=100"`
-}
-
-// UpdateCategoryRequest - обновление категории
-type UpdateCategoryRequest struct {
-	Name        *string `json:"category_name,omitempty" validate:"omitempty,min=1,max=100"`
-	Description *string `json:"description,omitempty" validate:"omitempty,max=500"`
-	Color       *string `json:"color,omitempty" validate:"omitempty,hexcolor"`
-	Icon        *string `json:"icon,omitempty" validate:"omitempty,max=50"`
 }
 
 // Ответы для категорий
@@ -284,6 +259,7 @@ type ExpenseTrends struct {
 
 // CreateBudgetRequest - создание бюджета
 type CreateBudgetRequest struct {
+	UserID     uint       `json:"user_id"`
 	CategoryID uint       `json:"category_id" validate:"required"`
 	Amount     float64    `json:"amount" validate:"required,gt=0" example:"500.00"`
 	Period     string     `json:"period" validate:"required,oneof=weekly monthly yearly" example:"monthly"`
@@ -294,11 +270,12 @@ type CreateBudgetRequest struct {
 
 // UpdateBudgetRequest - обновление бюджета
 type UpdateBudgetRequest struct {
-	Amount    *float64   `json:"amount,omitempty" validate:"omitempty,gt=0"`
-	Period    *string    `json:"period,omitempty" validate:"omitempty,oneof=weekly monthly yearly"`
-	StartDate *time.Time `json:"start_date,omitempty"`
-	EndDate   *time.Time `json:"end_date,omitempty"`
-	IsActive  *bool      `json:"is_active,omitempty"`
+	CategoryID uint       `json:"category_id" validate:"required"`
+	Amount     *float64   `json:"amount,omitempty" validate:"omitempty,gt=0"`
+	Period     *string    `json:"period,omitempty" validate:"omitempty,oneof=weekly monthly yearly"`
+	StartDate  *time.Time `json:"start_date,omitempty"`
+	EndDate    *time.Time `json:"end_date,omitempty"`
+	IsActive   *bool      `json:"is_active,omitempty"`
 }
 
 // Ответы для бюджетов
