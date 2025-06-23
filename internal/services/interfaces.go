@@ -28,6 +28,7 @@ type CategoryServiceInterface interface {
 	CreateCategory(ctx context.Context, userID uint, req dto.CreateCategoryRequest) (dto.CategoryResponse, error)
 	GetUserCategories(ctx context.Context, userID uint) ([]dto.CategoryResponse, error)
 	GetCategoryByID(ctx context.Context, userID uint, categoryID int) (dto.CategoryResponse, error)
+	GetMostUsedCategories(ctx context.Context, userID uint) ([]dto.CategoryResponse, error)
 	DeleteCategory(ctx context.Context, userID uint, categoryID int) error
 }
 

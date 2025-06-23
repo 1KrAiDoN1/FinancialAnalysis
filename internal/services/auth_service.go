@@ -196,13 +196,17 @@ func HashPassword(Password string) (string, error) {
 }
 
 func (a *AuthService) GetUserIDbyRefreshToken(refresh_token string) (int, error) {
-	return 0, nil
+	return a.repo.GetUserIDbyRefreshToken(refresh_token)
 }
 
 func (a *AuthService) RemoveOldRefreshToken(userID int) error {
-	return nil
+	return a.repo.RemoveOldRefreshToken(userID)
 }
 
 func (a *AuthService) SaveNewRefreshToken(token dto.RefreshTokenRequest) error {
-	return nil
+	refresh_token := models.RefreshToken{
+		Token:     token.RefreshToken,
+		ExpiresAt: token.ExpiresAt,
+	}
+	return a.repo.SaveNewRefreshToken(refresh_token)
 }

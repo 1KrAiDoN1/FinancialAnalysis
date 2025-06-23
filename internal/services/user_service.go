@@ -17,13 +17,35 @@ func NewUserService(repo repositories.UserRepositoryInterface) *UserService {
 }
 
 func (s *UserService) GetProfile(ctx context.Context, userID uint) (dto.UserProfile, error) {
-	return dto.UserProfile{}, nil
+	userprofile, err := s.repo.GetProfile(ctx, userID)
+	if err != nil {
+		return dto.UserProfile{}, err
+	}
+	res_profile := dto.UserProfile{
+		Email:     userprofile.Email,
+		FirstName: userprofile.FirstName,
+		LastName:  userprofile.LastName,
+		CreatedAt: userprofile.TimeOfRegistration,
+	}
+	return res_profile, nil
 }
 
 func (s *UserService) DeleteAccount(ctx context.Context, userID uint) error {
-	return nil
+	return s.repo.DeleteUser(ctx, userID)
 }
 
 func (s *UserService) GetUserStats(ctx context.Context, userID uint) (dto.UserStats, error) {
-	return dto.UserStats{}, nil
+	userstats, err := s.repo.GetUserStats(ctx, userID)
+	if err != nil {
+		return dto.UserStats{}, err
+	}
+	res_stats := dto.UserStats{
+		TotalExpenses:   userstats.TotalExpenses,
+		TotalCategories: userstats.TotalCategories,
+		TotalBudgets:    userstats.TotalBudgets,
+		MonthlyExpenses: userstats.MonthlyExpenses,
+		WeeklyExpenses:  userstats.WeeklyExpenses,
+		TopCategories:   nil,
+	}
+	return res_stats, nil
 }
