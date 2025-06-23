@@ -16,13 +16,14 @@ type Expense struct {
 }
 
 type Budget struct {
-	ID         uint      `json:"id"`
-	UserID     uint      `json:"user_id"`
-	CategoryID uint      `json:"category_id"`
-	Amount     float64   `json:"amount"`
-	Period     string    `json:"period"` // monthly, weekly, yearly
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	ID         uint       `json:"id"`
+	UserID     uint       `json:"user_id"`
+	CategoryID uint       `json:"category_id"`
+	Amount     float64    `json:"amount"`
+	Period     string     `json:"period"` // monthly, weekly, yearly
+	StartDate  *time.Time `json:"start_date,omitempty"`
+	EndDate    *time.Time `json:"end_date,omitempty"`
+	CreatedAt  time.Time  `json:"created_at"`
 }
 
 type Category struct {
@@ -45,6 +46,11 @@ type AccessToken struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type RefreshToken struct {
+	Token     string    `json:"token"`
+	ExpiresAt time.Time `json:"expires_at"`
+}
+
 type UserStats struct {
 	TotalExpenses   float64    `json:"total_expenses"`
 	TotalCategories int        `json:"total_categories"`
@@ -52,6 +58,4 @@ type UserStats struct {
 	MonthlyExpenses float64    `json:"monthly_expenses"`
 	WeeklyExpenses  float64    `json:"weekly_expenses"`
 	TopCategories   []Category `json:"categories"`
-	RecentExpenses  []Expense  `json:"expenses"`
-	BudgetAlerts    []Budget   `json:"budget"`
 }
