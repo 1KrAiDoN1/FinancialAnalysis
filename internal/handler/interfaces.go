@@ -21,6 +21,7 @@ type CategoryHandlerInterface interface {
 	CreateCategory(c *gin.Context)
 	GetCategories(c *gin.Context)
 	DeleteCategory(c *gin.Context)
+	GetMostUsedCategories(c *gin.Context)
 	GetCategoryByID(c *gin.Context)
 }
 

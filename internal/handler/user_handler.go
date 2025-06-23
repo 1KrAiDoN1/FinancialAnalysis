@@ -79,8 +79,6 @@ func (h *UserHandler) GetStats(c *gin.Context) {
 		MonthlyExpenses: stats.MonthlyExpenses,
 		WeeklyExpenses:  stats.WeeklyExpenses,
 		TopCategories:   stats.TopCategories,
-		RecentExpenses:  stats.RecentExpenses,
-		BudgetAlerts:    stats.BudgetAlerts,
 	})
 
 }

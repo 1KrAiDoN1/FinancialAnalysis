@@ -105,6 +105,28 @@ func (h *CategoryHandler) GetCategories(c *gin.Context) {
 	})
 }
 
+func (h *CategoryHandler) GetMostUsedCategories(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
+	defer cancel()
+	userID, err := middleware.GetUserId(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	categories, err := h.categoryService.GetMostUsedCategories(ctx, userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, dto.CategoriesListResponse{
+		Categories: categories,
+	})
+
+}
 func (h *CategoryHandler) DeleteCategory(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
 	defer cancel()
