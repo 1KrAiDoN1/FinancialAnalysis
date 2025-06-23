@@ -35,3 +35,13 @@ func (r *AuthRepository) GetUserByID(ctx context.Context, userID uint) (*models.
 func (r *AuthRepository) UserExistsByEmail(ctx context.Context, email string) (bool, error) {
 	return true, nil
 }
+
+func (r *AuthRepository) GetUserIDbyRefreshToken(refresh_token string) (int, error) {
+	return 0, nil
+}
+func (r *AuthRepository) RemoveOldRefreshToken(userID int) error {
+	return nil
+}
+func (r *AuthRepository) SaveNewRefreshToken(token models.RefreshToken) error {
+	return nil
+}

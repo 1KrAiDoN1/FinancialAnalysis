@@ -16,19 +16,26 @@ func NewBudgetRepository(storage storage.BudgetStorageInterface) *BudgetReposito
 	}
 }
 
-func (b *BudgetRepository) CreateBudget(ctx context.Context, budget *models.Budget) error {
+func (b *BudgetRepository) CreateBudget(ctx context.Context, budget models.Budget) (models.Budget, error) {
+	return models.Budget{}, nil
+
+}
+
+func (b *BudgetRepository) GetUserBudgets(ctx context.Context, userID uint) ([]models.Budget, error) {
+	return []models.Budget{}, nil
+}
+
+func (b *BudgetRepository) GetBudgetByID(ctx context.Context, id int) (models.Budget, error) {
+	return models.Budget{}, nil
+}
+
+func (b *BudgetRepository) GetBudgetByUserID(ctx context.Context, userID uint) ([]models.Budget, error) {
+	return nil, nil
+}
+
+func (b *BudgetRepository) UpdateBudget(ctx context.Context, budget models.Budget) error {
 	return nil
-
 }
-
-func (b *BudgetRepository) GetBudgetByID(ctx context.Context, id uint) (*models.Budget, error) {
-	return nil, nil
-}
-
-func (b *BudgetRepository) GetBudgetByUserID(ctx context.Context, userID uint) ([]*models.Budget, error) {
-	return nil, nil
-}
-
-func (b *BudgetRepository) DeleteBudget(ctx context.Context, id uint) error {
+func (b *BudgetRepository) DeleteBudget(ctx context.Context, userID uint, id uint) error {
 	return nil
 }

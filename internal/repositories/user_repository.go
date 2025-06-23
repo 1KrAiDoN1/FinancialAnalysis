@@ -17,10 +17,14 @@ func NewUserRepository(storage storage.UserStorageInterface) *UserRepository { /
 	}
 }
 
-func (u *UserRepository) DeleteUser(ctx context.Context, id uint) error {
+func (u *UserRepository) DeleteUser(ctx context.Context, userID uint) error {
 	return nil
 }
 
-func (u *UserRepository) GetUserStats(ctx context.Context, userID uint) (*models.UserStats, error) {
-	return nil, nil
+func (u *UserRepository) GetUserStats(ctx context.Context, userID uint) (models.UserStats, error) {
+	return models.UserStats{}, nil
+}
+
+func (u *UserRepository) GetProfile(ctx context.Context, userID uint) (models.User, error) {
+	return models.User{}, nil
 }

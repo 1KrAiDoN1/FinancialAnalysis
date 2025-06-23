@@ -16,22 +16,22 @@ func NewCategoryRepository(storage storage.CategoryStorageInterface) *CategoryRe
 	}
 }
 
-func (c *CategoryRepository) CreateCategory(ctx context.Context, category *models.Category) error {
-	return nil
+func (c *CategoryRepository) CreateCategory(ctx context.Context, category models.Category) (models.Category, error) {
+	return models.Category{}, nil
 }
 
-func (c *CategoryRepository) GetCategoryByID(ctx context.Context, id uint) (*models.Category, error) {
+func (c *CategoryRepository) GetCategoryByID(ctx context.Context, id int) (models.Category, error) {
+	return models.Category{}, nil
+}
+
+func (c *CategoryRepository) GetCategories(ctx context.Context, userID uint) ([]models.Category, error) {
 	return nil, nil
 }
 
-func (c *CategoryRepository) GetCategoryByUserID(ctx context.Context, userID uint) ([]*models.Category, error) {
-	return nil, nil
-}
-
-func (c *CategoryRepository) DeleteCategory(ctx context.Context, id uint) error {
+func (c *CategoryRepository) DeleteCategory(ctx context.Context, id int) error {
 	return nil
 }
 
-func (c *CategoryRepository) GetMostUsedCategories(ctx context.Context, userID uint) ([]*models.Category, error) {
+func (c *CategoryRepository) GetMostUsedCategories(ctx context.Context, userID uint) ([]models.Category, error) {
 	return nil, nil
 }
