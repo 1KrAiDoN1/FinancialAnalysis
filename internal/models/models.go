@@ -5,18 +5,19 @@ import (
 )
 
 type Expense struct {
-	ID          uint      `json:"id"`
-	UserID      uint      `json:"user_id"`
-	CategoryID  uint      `json:"category_id"`
-	Amount      float64   `json:"amount"`
-	Description string    `json:"description"`
-	Date        time.Time `json:"date"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID           uint      `json:"id"`
+	UserID       uint      `json:"user_id"`
+	CategoryID   uint      `json:"category_id"`
+	CategoryName string    `json:"category_name"`
+	Amount       float64   `json:"amount"`
+	Description  string    `json:"description"`
+	Date         time.Time `json:"date"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
 
 type Budget struct {
-	ID         uint       `json:"id"`
+	ID         uint       `json:"budget_id"`
 	UserID     uint       `json:"user_id"`
 	CategoryID uint       `json:"category_id"`
 	Amount     float64    `json:"amount"`
@@ -27,9 +28,9 @@ type Budget struct {
 }
 
 type Category struct {
-	ID     uint   `json:"id"`
+	ID     uint   `json:"category_id"`
 	UserID uint   `json:"user_id"`
-	Name   string `json:"name"`
+	Name   string `json:"category_name"`
 	// Timestamps
 	CreatedAt time.Time  `json:"created_at"`
 	DeletedAt *time.Time `json:"deleted_at"`
@@ -40,14 +41,14 @@ type Category struct {
 }
 
 type AccessToken struct {
-	Token string `json:"token"`
+	Token string `json:"access_token"`
 	// Token timing
 	ExpiresAt time.Time `json:"expires_at"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
 type RefreshToken struct {
-	Token     string    `json:"token"`
+	Token     string    `json:"refresh_token"`
 	ExpiresAt time.Time `json:"expires_at"`
 }
 
