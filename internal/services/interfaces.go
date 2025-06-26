@@ -30,6 +30,7 @@ type CategoryServiceInterface interface {
 	GetCategoryByID(ctx context.Context, userID uint, categoryID int) (dto.CategoryResponse, error)
 	GetMostUsedCategories(ctx context.Context, userID uint) ([]dto.CategoryResponse, error)
 	DeleteCategory(ctx context.Context, userID uint, categoryID int) error
+	GetAnalyticsByCategory(ctx context.Context, userID uint, categoryID int, period dto.CategoryPeriod) (dto.CategoryAnalytics, error)
 }
 
 type ExpenseServiceInterface interface {

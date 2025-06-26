@@ -66,7 +66,7 @@ func (b *BudgetService) GetUserBudgets(ctx context.Context, userID uint) ([]dto.
 }
 
 func (b *BudgetService) UpdateBudget(ctx context.Context, userID uint, budgetID int, req dto.UpdateBudgetRequest) error {
-	existingBudget, err := b.repo.GetBudgetByID(ctx, budgetID)
+	existingBudget, err := b.repo.GetBudgetByID(ctx, userID, budgetID)
 	if err != nil {
 		return err
 	}

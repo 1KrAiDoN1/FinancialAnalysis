@@ -53,7 +53,7 @@ func (c *CategoryService) GetUserCategories(ctx context.Context, userID uint) ([
 }
 
 func (c *CategoryService) GetCategoryByID(ctx context.Context, userID uint, categoryID int) (dto.CategoryResponse, error) {
-	category, err := c.repo.GetCategoryByID(ctx, categoryID)
+	category, err := c.repo.GetCategoryByID(ctx, userID, categoryID)
 	if err != nil {
 		return dto.CategoryResponse{}, err
 	}
@@ -85,4 +85,64 @@ func (c *CategoryService) GetMostUsedCategories(ctx context.Context, userID uint
 
 func (c *CategoryService) DeleteCategory(ctx context.Context, userID uint, categoryID int) error {
 	return c.repo.DeleteCategory(ctx, categoryID)
+}
+
+func (c *CategoryService) GetAnalyticsByCategory(ctx context.Context, userID uint, categoryID int, period dto.CategoryPeriod) (dto.CategoryAnalytics, error) {
+	category_name, err := c.repo.GetCategoryByID(ctx, userID, categoryID)
+	if err != nil {
+		return dto.CategoryAnalytics{}, err
+	}
+	total_amount, err := c.repo.GetTotalAmountInCategory(ctx, userID, categoryID, period.Period)
+	if err != nil {
+		return dto.CategoryAnalytics{}, err
+	}
+	expense_count, err := c.repo.GetExpenseCountInCategory(ctx, userID, categoryID, period.Period)
+	if err != nil {
+		return dto.CategoryAnalytics{}, err
+	}
+	largest_expense, err := c.repo.GetLargestExpenseInCategory(ctx, userID, categoryID, period.Period)
+	if err != nil {
+		return dto.CategoryAnalytics{}, err
+	}
+	smallest_expense, err := c.repo.GetSmallestExpenseInCategory(ctx, userID, categoryID, period.Period)
+	if err != nil {
+		return dto.CategoryAnalytics{}, err
+	}
+	var timedist float64
+	if period.Period == "weekly" {
+		timedist = 7
+	} else if period.Period == "monthly" {
+		timedist = 30
+	} else if period.Period == "yearly" {
+		timedist = 365
+	} else {
+		timedist = 0
+	}
+	averagePerDay := total_amount / timedist
+
+	return dto.CategoryAnalytics{
+		CategoryID:    uint(categoryID),
+		CategoryName:  category_name.Name,
+		Period:        period.Period,
+		TotalAmount:   total_amount,
+		ExpensesCount: expense_count,
+		AveragePerDay: averagePerDay,
+		LargestExpense: dto.ExpenseResponse{
+			ID:           largest_expense.ID,
+			CategoryID:   largest_expense.CategoryID,
+			CategoryName: largest_expense.CategoryName,
+			Amount:       largest_expense.Amount,
+			Description:  &largest_expense.Description,
+			CreatedAt:    largest_expense.CreatedAt,
+		},
+		SmallestExpense: dto.ExpenseResponse{
+			ID:           smallest_expense.ID,
+			CategoryID:   smallest_expense.CategoryID,
+			CategoryName: smallest_expense.CategoryName,
+			Amount:       smallest_expense.Amount,
+			Description:  &smallest_expense.Description,
+			CreatedAt:    smallest_expense.CreatedAt,
+		},
+		AverageExpenseAmount: float64(expense_count) / timedist,
+	}, nil
 }
