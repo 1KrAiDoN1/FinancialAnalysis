@@ -169,11 +169,13 @@ func (h *ExpenseHandler) GetAnalytics(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, dto.ExpenseAnalytics{
-		Period:        analytics.Period,
-		TotalAmount:   analytics.TotalAmount,
-		ExpensesCount: analytics.ExpensesCount,
-		AveragePerDay: analytics.AveragePerDay,
-		TopExpenses:   analytics.TopExpenses,
+		Period:               analytics.Period,
+		TotalAmount:          analytics.TotalAmount,
+		ExpensesCount:        analytics.ExpensesCount,
+		AveragePerDay:        analytics.AveragePerDay,
+		LargestExpense:       analytics.LargestExpense,
+		SmallestExpense:      analytics.SmallestExpense,
+		AverageExpenseAmount: analytics.AverageExpenseAmount,
 	})
 
 }

@@ -69,8 +69,6 @@ func (h *AuthHandler) SignIn(c *gin.Context) {
 }
 
 func (h *AuthHandler) Logout(c *gin.Context) {
-	// ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
-	// defer cancel()
 	refresh_token, err := c.Cookie("refresh_token")
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})

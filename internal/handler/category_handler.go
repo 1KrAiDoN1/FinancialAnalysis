@@ -127,6 +127,7 @@ func (h *CategoryHandler) GetMostUsedCategories(c *gin.Context) {
 	})
 
 }
+
 func (h *CategoryHandler) DeleteCategory(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
 	defer cancel()
@@ -155,4 +156,48 @@ func (h *CategoryHandler) DeleteCategory(c *gin.Context) {
 		"message": "category deleted",
 	})
 
+}
+
+func (h *CategoryHandler) GetAnalyticsByCategory(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
+	defer cancel()
+	userID, err := middleware.GetUserId(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	categoryID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid category id",
+		})
+		return
+	}
+	var period dto.CategoryPeriod
+	if err := c.BindJSON(&period); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	category_analytics, err := h.categoryService.GetAnalyticsByCategory(ctx, userID, categoryID, period)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, dto.CategoryAnalytics{
+		CategoryID:           category_analytics.CategoryID,
+		CategoryName:         category_analytics.CategoryName,
+		Period:               category_analytics.Period,
+		TotalAmount:          category_analytics.TotalAmount,
+		ExpensesCount:        category_analytics.ExpensesCount,
+		AveragePerDay:        category_analytics.AveragePerDay,
+		LargestExpense:       category_analytics.LargestExpense,
+		SmallestExpense:      category_analytics.SmallestExpense,
+		AverageExpenseAmount: category_analytics.AverageExpenseAmount,
+	})
 }

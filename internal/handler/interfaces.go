@@ -23,6 +23,7 @@ type CategoryHandlerInterface interface {
 	DeleteCategory(c *gin.Context)
 	GetMostUsedCategories(c *gin.Context)
 	GetCategoryByID(c *gin.Context)
+	GetAnalyticsByCategory(c *gin.Context)
 }
 
 type ExpenseHandlerInterface interface {
