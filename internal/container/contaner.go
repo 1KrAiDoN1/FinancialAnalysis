@@ -17,27 +17,6 @@ type Container struct {
 	Repositories *repositories.Repositories
 	Services     *services.Services
 	Handlers     *handler.Handlers
-
-	// // Repositories
-	// AuthRepo     repositories.AuthRepositoryInterface
-	// UserRepo     repositories.UserRepositoryInterface
-	// CategoryRepo repositories.CategoryRepositoryInterface
-	// ExpenseRepo  repositories.ExpenseRepositoryInterface
-	// BudgetRepo   repositories.BudgetRepositoryInterface
-
-	// // Services
-	// AuthService     services.AuthServiceInterface
-	// UserService     services.UserServiceInterface
-	// CategoryService services.CategoryServiceInterface
-	// ExpenseService  services.ExpenseServiceInterface
-	// BudgetService   services.BudgetServiceInterface
-
-	// // Handlers
-	// AuthHandler     handler.AuthHandlerInterface
-	// UserHandler     handler.UserHandlerInterface
-	// CategoryHandler handler.CategoryHandlerInterface
-	// ExpenseHandler  handler.ExpenseHandlerInterface
-	// BudgetHandler   handler.BudgetHandlerInterface
 }
 
 func NewContainer() (*Container, error) {
@@ -59,27 +38,6 @@ func NewContainer() (*Container, error) {
 	services := services.NewServices(repositories)
 	handlers := handler.NewHandlers(services)
 
-	// // Initialize repositories
-	// authRepo := repositories.NewAuthRepository(dbpool)
-	// userRepo := repositories.NewUserRepository(dbpool)
-	// categoryRepo := repositories.NewCategoryRepository(dbpool)
-	// expenseRepo := repositories.NewExpenseRepository(dbpool)
-	// budgetRepo := repositories.NewBudgetRepository(dbpool)
-
-	// // Initialize services
-	// authService := services.NewAuthService(authRepo)
-	// userService := services.NewUserService(userRepo)
-	// categoryService := services.NewCategoryService(categoryRepo)
-	// expenseService := services.NewExpenseService(expenseRepo, categoryRepo)
-	// budgetService := services.NewBudgetService(budgetRepo, expenseRepo)
-
-	// // Initialize handlers
-	// authHandler := handler.NewAuthHandler(authService)
-	// userHandler := handler.NewUserHandler(userService)
-	// categoryHandler := handler.NewCategoryHandler(categoryService)
-	// expenseHandler := handler.NewExpenseHandler(expenseService)
-	// budgetHandler := handler.NewBudgetHandler(budgetService)
-
 	return &Container{
 		//Config: cfg,
 		DB:           DB,
@@ -87,23 +45,5 @@ func NewContainer() (*Container, error) {
 		Repositories: repositories,
 		Services:     services,
 		Handlers:     handlers,
-
-		// AuthRepo:     authRepo,
-		// UserRepo:     userRepo,
-		// CategoryRepo: categoryRepo,
-		// ExpenseRepo:  expenseRepo,
-		// BudgetRepo:   budgetRepo,
-
-		// AuthService:     authService,
-		// UserService:     userService,
-		// CategoryService: categoryService,
-		// ExpenseService:  expenseService,
-		// BudgetService:   budgetService,
-
-		// AuthHandler:     authHandler,
-		// UserHandler:     userHandler,
-		// CategoryHandler: categoryHandler,
-		// ExpenseHandler:  expenseHandler,
-		// BudgetHandler:   budgetHandler,
 	}, nil
 }
