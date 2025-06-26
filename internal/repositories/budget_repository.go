@@ -25,7 +25,7 @@ func (b *BudgetRepository) GetUserBudgets(ctx context.Context, userID uint) ([]m
 	return []models.Budget{}, nil
 }
 
-func (b *BudgetRepository) GetBudgetByID(ctx context.Context, id int) (models.Budget, error) {
+func (b *BudgetRepository) GetBudgetByID(ctx context.Context, userID uint, budget_id int) (models.Budget, error) {
 	return models.Budget{}, nil
 }
 

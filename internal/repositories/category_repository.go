@@ -20,7 +20,7 @@ func (c *CategoryRepository) CreateCategory(ctx context.Context, category models
 	return models.Category{}, nil
 }
 
-func (c *CategoryRepository) GetCategoryByID(ctx context.Context, id int) (models.Category, error) {
+func (c *CategoryRepository) GetCategoryByID(ctx context.Context, userId uint, category_id int) (models.Category, error) {
 	return models.Category{}, nil
 }
 
@@ -34,4 +34,20 @@ func (c *CategoryRepository) DeleteCategory(ctx context.Context, id int) error {
 
 func (c *CategoryRepository) GetMostUsedCategories(ctx context.Context, userID uint) ([]models.Category, error) {
 	return nil, nil
+}
+
+func (c *CategoryRepository) GetTotalAmountInCategory(ctx context.Context, userID uint, categoryID int, period string) (float64, error) {
+	return 0, nil
+}
+
+func (c *CategoryRepository) GetLargestExpenseInCategory(ctx context.Context, userID uint, categoryID int, period string) (models.Expense, error) {
+	return models.Expense{}, nil
+}
+
+func (c *CategoryRepository) GetSmallestExpenseInCategory(ctx context.Context, userID uint, categoryID int, period string) (models.Expense, error) {
+	return models.Expense{}, nil
+}
+
+func (c *CategoryRepository) GetExpenseCountInCategory(ctx context.Context, userID uint, categoryID int, period string) (int, error) {
+	return 0, nil
 }

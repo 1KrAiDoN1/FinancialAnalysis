@@ -13,7 +13,7 @@ type AuthRepositoryInterface interface {
 	GetUserIDbyRefreshToken(refresh_token string) (int, error)
 	RemoveOldRefreshToken(userID int) error
 	SaveNewRefreshToken(token models.RefreshToken) error
-	CheckUserVerification(ctx context.Context, email string, hashpassword string) (*models.User, error)
+	CheckUserVerification(ctx context.Context, email string, hash_password string) (*models.User, error)
 	// Проверка существования
 	UserExistsByEmail(ctx context.Context, email string) (bool, error)
 }
@@ -29,33 +29,37 @@ type UserRepositoryInterface interface {
 type CategoryRepositoryInterface interface {
 	// Basic CRUD operations
 	CreateCategory(ctx context.Context, category models.Category) (models.Category, error)
-	GetCategoryByID(ctx context.Context, id int) (models.Category, error)
+	GetCategoryByID(ctx context.Context, userId uint, category_id int) (models.Category, error)
 	GetCategories(ctx context.Context, userID uint) ([]models.Category, error)
 	DeleteCategory(ctx context.Context, id int) error
 	// Additional methods
 	GetMostUsedCategories(ctx context.Context, userID uint) ([]models.Category, error)
+	GetTotalAmountInCategory(ctx context.Context, userID uint, categoryID int, period string) (float64, error)
+	GetLargestExpenseInCategory(ctx context.Context, userID uint, categoryID int, period string) (models.Expense, error)
+	GetSmallestExpenseInCategory(ctx context.Context, userID uint, categoryID int, period string) (models.Expense, error)
+	GetExpenseCountInCategory(ctx context.Context, userID uint, categoryID int, period string) (int, error)
 }
 
 // ExpenseRepository handles expense data persistence
 type ExpenseRepositoryInterface interface {
 	// Basic CRUD operations
-	CreateExpense(ctx context.Context, expense *models.Expense) error
-	GetExpenseByID(ctx context.Context, id uint) (*models.Expense, error)
-	GetExpenseByUserID(ctx context.Context, userID uint, expense *models.Expense) ([]*models.Expense, error)
-	DeleteExpense(ctx context.Context, id uint) error
+	CreateExpense(ctx context.Context, expense models.Expense) (models.Expense, error)
+	GetExpenseByID(ctx context.Context, userID uint, expense_id uint) (models.Expense, error)
+	GetExpensesByUserID(ctx context.Context, userID uint) ([]models.Expense, error)
+	GetExpensesByPeriod(ctx context.Context, userID uint, period string) ([]models.Expense, error)
+	DeleteExpense(ctx context.Context, userID uint, id uint) error
 	// Analytics and reporting methods
-	GetExpensesByCategory(ctx context.Context, userID uint, categoryID uint, limit, offset int) ([]*models.Expense, error)
+	GetExpensesByCategory(ctx context.Context, userID uint, categoryID uint, limit, offset int) ([]models.Expense, error)
 	// Aggregation methods
-	GetAverageExpenseAmount(ctx context.Context, userID uint) (float64, error)
-	GetLargestExpense(ctx context.Context, userID uint) (*models.Expense, error)
-	GetSmallestExpense(ctx context.Context, userID uint) (*models.Expense, error)
+	GetLargestExpenseByPeriod(ctx context.Context, userID uint, period string) (models.Expense, error)
+	GetSmallestExpenseByPeriod(ctx context.Context, userID uint, period string) (models.Expense, error)
 }
 
 // BudgetRepository handles budget data persistence
 type BudgetRepositoryInterface interface {
 	// Basic CRUD operations
 	CreateBudget(ctx context.Context, budget models.Budget) (models.Budget, error)
-	GetBudgetByID(ctx context.Context, id int) (models.Budget, error)
+	GetBudgetByID(ctx context.Context, userID uint, budget_id int) (models.Budget, error)
 	GetUserBudgets(ctx context.Context, userID uint) ([]models.Budget, error)
 	GetBudgetByUserID(ctx context.Context, userID uint) ([]models.Budget, error)
 	UpdateBudget(ctx context.Context, budget models.Budget) error
