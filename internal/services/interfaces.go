@@ -18,10 +18,10 @@ type AuthServiceInterface interface {
 }
 
 type BudgetServiceInterface interface {
-	CreateBudget(ctx context.Context, userID uint, req dto.CreateBudgetRequest) (dto.BudgetResponse, error)
-	GetUserBudgets(ctx context.Context, userID uint) ([]dto.BudgetResponse, error)
-	UpdateBudget(ctx context.Context, userID uint, budgetID int, req dto.UpdateBudgetRequest) error
-	DeleteBudget(ctx context.Context, userID uint, budgetID int) error
+	CreateBudget(ctx context.Context, userID uint, category_id int, req dto.CreateBudgetRequest) (dto.BudgetResponse, error)
+	GetUserBudgets(ctx context.Context, userID uint, category_id int) ([]dto.BudgetResponse, error)
+	UpdateBudget(ctx context.Context, userID uint, category_id int, budgetID int, req dto.UpdateBudgetRequest) error
+	DeleteBudget(ctx context.Context, userID uint, category_id, budgetID int) error
 	//CheckBudgetStatus(ctx context.Context, userID uint) ([]*dto.BudgetStatus, error)
 }
 
@@ -36,11 +36,11 @@ type CategoryServiceInterface interface {
 
 type ExpenseServiceInterface interface {
 	CreateExpense(ctx context.Context, userID uint, req dto.CreateExpenseRequest) (dto.ExpenseResponse, error)
-	GetUserExpense(ctx context.Context, userID uint, expenseID int) (dto.ExpenseResponse, error)
-	GetUserExpenses(ctx context.Context, userID uint) ([]dto.ExpenseResponse, error)
-	DeleteExpense(ctx context.Context, userID uint, expenseID int) error
-	GetExpenseAnalytics(ctx context.Context, userID uint, period dto.ExpensePeriod) (dto.ExpenseAnalytics, error)
-	updateBudgetsAfterExpense(ctx context.Context, userID uint, categoryID uint, amount float64, expenseDate time.Time) error
+	GetUserExpense(ctx context.Context, userID uint, category_id int, expenseID int) (dto.ExpenseResponse, error)
+	GetUserExpenses(ctx context.Context, category_id int, userID uint) ([]dto.ExpenseResponse, error)
+	DeleteExpense(ctx context.Context, userID uint, category_id int, expenseID int) error
+	GetExpenseAnalytics(ctx context.Context, userID uint, category_id int, period dto.ExpensePeriod) (dto.ExpenseAnalytics, error)
+	updateBudgetsAfterExpense(ctx context.Context, userID uint, categoryID int, amount float64, expenseDate time.Time) error
 }
 
 type UserServiceInterface interface {

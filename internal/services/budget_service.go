@@ -21,10 +21,10 @@ func NewBudgetService(repo repositories.BudgetRepositoryInterface, expense_repo 
 	}
 }
 
-func (b *BudgetService) CreateBudget(ctx context.Context, userID uint, req dto.CreateBudgetRequest) (dto.BudgetResponse, error) {
+func (b *BudgetService) CreateBudget(ctx context.Context, userID uint, category_id int, req dto.CreateBudgetRequest) (dto.BudgetResponse, error) {
 	req_budget := models.Budget{
 		UserID:      req.UserID,
-		CategoryID:  req.CategoryID,
+		CategoryID:  uint(category_id),
 		Amount:      req.Amount,
 		SpentAmount: 0,
 		Period:      req.Period,
@@ -38,7 +38,7 @@ func (b *BudgetService) CreateBudget(ctx context.Context, userID uint, req dto.C
 	}
 
 	// Пересчитываем потраченную сумму для нового бюджета
-	err = b.recalculateBudgetSpentAmount(ctx, res_budget.ID, userID, req.CategoryID, req.StartDate, req.EndDate)
+	err = b.recalculateBudgetSpentAmount(ctx, res_budget.ID, userID, category_id, req.StartDate, req.EndDate)
 	if err != nil {
 		return dto.BudgetResponse{}, err
 	}
@@ -57,8 +57,8 @@ func (b *BudgetService) CreateBudget(ctx context.Context, userID uint, req dto.C
 
 }
 
-func (b *BudgetService) GetUserBudgets(ctx context.Context, userID uint) ([]dto.BudgetResponse, error) {
-	budgets, err := b.repo.GetUserBudgets(ctx, userID)
+func (b *BudgetService) GetUserBudgets(ctx context.Context, userID uint, category_id int) ([]dto.BudgetResponse, error) {
+	budgets, err := b.repo.GetUserBudgets(ctx, category_id, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (b *BudgetService) GetUserBudgets(ctx context.Context, userID uint) ([]dto.
 	for i, budget := range budgets {
 		budgetResponses[i] = dto.BudgetResponse{
 			ID:          budget.ID,
-			CategoryID:  budget.CategoryID,
+			CategoryID:  uint(category_id),
 			Amount:      budget.Amount,
 			SpentAmount: budget.SpentAmount,
 			Period:      budget.Period,
@@ -80,8 +80,8 @@ func (b *BudgetService) GetUserBudgets(ctx context.Context, userID uint) ([]dto.
 	return budgetResponses, nil
 }
 
-func (b *BudgetService) UpdateBudget(ctx context.Context, userID uint, budgetID int, req dto.UpdateBudgetRequest) error {
-	existingBudget, err := b.repo.GetBudgetByID(ctx, userID, budgetID)
+func (b *BudgetService) UpdateBudget(ctx context.Context, userID uint, category_id int, budgetID int, req dto.UpdateBudgetRequest) error {
+	existingBudget, err := b.repo.GetBudgetByID(ctx, userID, category_id, budgetID)
 	if err != nil {
 		return err
 	}
@@ -95,7 +95,7 @@ func (b *BudgetService) UpdateBudget(ctx context.Context, userID uint, budgetID 
 	updateData := models.Budget{
 		ID:         uint(budgetID),
 		UserID:     userID,
-		CategoryID: req.CategoryID,
+		CategoryID: uint(category_id),
 		Amount:     *req.Amount,
 		Period:     *req.Period,
 		StartDate:  req.StartDate,
@@ -106,12 +106,12 @@ func (b *BudgetService) UpdateBudget(ctx context.Context, userID uint, budgetID 
 	return b.repo.UpdateBudget(ctx, updateData)
 }
 
-func (b *BudgetService) DeleteBudget(ctx context.Context, userID uint, budgetID int) error {
-	return b.repo.DeleteBudget(ctx, userID, uint(budgetID))
+func (b *BudgetService) DeleteBudget(ctx context.Context, userID uint, category_id int, budgetID int) error {
+	return b.repo.DeleteBudget(ctx, userID, category_id, budgetID)
 }
 
 // recalculateBudgetSpentAmount пересчитывает потраченную сумму для бюджета
-func (b *BudgetService) recalculateBudgetSpentAmount(ctx context.Context, budgetID, userID, categoryID uint, startDate, endDate *time.Time) error {
+func (b *BudgetService) recalculateBudgetSpentAmount(ctx context.Context, budgetID, userID uint, categoryID int, startDate, endDate *time.Time) error {
 	expenses, err := b.expense_repo.GetExpensesByCategoryAndPeriod(ctx, userID, categoryID, startDate, endDate)
 	if err != nil {
 		return err
@@ -122,5 +122,5 @@ func (b *BudgetService) recalculateBudgetSpentAmount(ctx context.Context, budget
 		totalSpent += expense.Amount
 	}
 
-	return b.repo.UpdateSpentAmount(ctx, budgetID, totalSpent)
+	return b.repo.UpdateSpentAmount(ctx, categoryID, budgetID, totalSpent)
 }

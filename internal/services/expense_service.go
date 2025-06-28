@@ -35,7 +35,7 @@ func (s *ExpenseService) CreateExpense(ctx context.Context, userID uint, req dto
 	}
 
 	// Обновляем бюджеты после создания расхода
-	err = s.updateBudgetsAfterExpense(ctx, userID, req.CategoryID, req.Amount, req.Date)
+	err = s.updateBudgetsAfterExpense(ctx, userID, int(req.CategoryID), req.Amount, req.Date)
 	if err != nil {
 		return dto.ExpenseResponse{}, err
 	}
@@ -51,8 +51,8 @@ func (s *ExpenseService) CreateExpense(ctx context.Context, userID uint, req dto
 	}, nil
 }
 
-func (s *ExpenseService) GetUserExpense(ctx context.Context, userID uint, expenseID int) (dto.ExpenseResponse, error) {
-	res_expense, err := s.repo.GetExpenseByID(ctx, userID, uint(expenseID))
+func (s *ExpenseService) GetUserExpense(ctx context.Context, userID uint, category_id int, expenseID int) (dto.ExpenseResponse, error) {
+	res_expense, err := s.repo.GetExpenseByID(ctx, userID, category_id, uint(expenseID))
 	if err != nil {
 		return dto.ExpenseResponse{}, nil
 	}
@@ -68,8 +68,8 @@ func (s *ExpenseService) GetUserExpense(ctx context.Context, userID uint, expens
 	}, nil
 }
 
-func (s *ExpenseService) GetUserExpenses(ctx context.Context, userID uint) ([]dto.ExpenseResponse, error) {
-	req_expenses, err := s.repo.GetExpensesByUserID(ctx, userID)
+func (s *ExpenseService) GetUserExpenses(ctx context.Context, category_id int, userID uint) ([]dto.ExpenseResponse, error) {
+	req_expenses, err := s.repo.GetExpensesByUserID(ctx, category_id, userID)
 	if err != nil {
 		return []dto.ExpenseResponse{}, err
 	}
@@ -88,20 +88,20 @@ func (s *ExpenseService) GetUserExpenses(ctx context.Context, userID uint) ([]dt
 	return res_expenses, nil
 }
 
-func (s *ExpenseService) DeleteExpense(ctx context.Context, userID uint, expenseID int) error {
+func (s *ExpenseService) DeleteExpense(ctx context.Context, userID uint, category_id int, expenseID int) error {
 	// Получаем информацию о расходе перед удалением для возврата бюджета
-	expense, err := s.repo.GetExpenseByID(ctx, userID, uint(expenseID))
+	expense, err := s.repo.GetExpenseByID(ctx, userID, category_id, uint(expenseID))
 	if err != nil {
 		return err
 	}
 
-	err = s.repo.DeleteExpense(ctx, userID, uint(expenseID))
+	err = s.repo.DeleteExpense(ctx, userID, category_id, uint(expenseID))
 	if err != nil {
 		return err
 	}
 
 	// Возвращаем средства в бюджеты после удаления расхода
-	err = s.restoreBudgetsAfterExpenseDeletion(ctx, userID, expense.CategoryID, expense.Amount, expense.Date)
+	err = s.restoreBudgetsAfterExpenseDeletion(ctx, userID, int(expense.CategoryID), expense.Amount, expense.Date)
 	if err != nil {
 		// Логируем ошибку, но не прерываем процесс удаления расхода
 	}
@@ -110,8 +110,8 @@ func (s *ExpenseService) DeleteExpense(ctx context.Context, userID uint, expense
 
 }
 
-func (s *ExpenseService) GetExpenseAnalytics(ctx context.Context, userID uint, period dto.ExpensePeriod) (dto.ExpenseAnalytics, error) {
-	req, err := s.repo.GetExpensesByPeriod(ctx, userID, period.Period)
+func (s *ExpenseService) GetExpenseAnalytics(ctx context.Context, userID uint, category_id int, period dto.ExpensePeriod) (dto.ExpenseAnalytics, error) {
+	req, err := s.repo.GetExpensesByPeriod(ctx, userID, category_id, period.Period)
 	if err != nil {
 		return dto.ExpenseAnalytics{}, err
 	}
@@ -122,11 +122,11 @@ func (s *ExpenseService) GetExpenseAnalytics(ctx context.Context, userID uint, p
 	}
 	total_average_expense := total_amount / float64(total_count)
 
-	largest_expense, err := s.repo.GetLargestExpenseByPeriod(ctx, userID, period.Period)
+	largest_expense, err := s.repo.GetLargestExpenseByPeriod(ctx, userID, category_id, period.Period)
 	if err != nil {
 		return dto.ExpenseAnalytics{}, err
 	}
-	smallest_expense, err := s.repo.GetSmallestExpenseByPeriod(ctx, userID, period.Period)
+	smallest_expense, err := s.repo.GetSmallestExpenseByPeriod(ctx, userID, category_id, period.Period)
 	if err != nil {
 		return dto.ExpenseAnalytics{}, err
 	}
@@ -170,7 +170,7 @@ func (s *ExpenseService) GetExpenseAnalytics(ctx context.Context, userID uint, p
 }
 
 // updateBudgetsAfterExpense обновляет все подходящие бюджеты после добавления расхода
-func (s *ExpenseService) updateBudgetsAfterExpense(ctx context.Context, userID uint, categoryID uint, amount float64, expenseDate time.Time) error {
+func (s *ExpenseService) updateBudgetsAfterExpense(ctx context.Context, userID uint, categoryID int, amount float64, expenseDate time.Time) error {
 	// Получаем все активные бюджеты пользователя для данной категории
 	budgets, err := s.budget_repo.GetActiveBudgetsByCategoryAndDate(ctx, userID, categoryID, expenseDate)
 	if err != nil {
@@ -179,7 +179,7 @@ func (s *ExpenseService) updateBudgetsAfterExpense(ctx context.Context, userID u
 
 	// Обновляем каждый подходящий бюджет
 	for _, budget := range budgets {
-		err = s.budget_repo.UpdateSpentAmount(ctx, budget.ID, budget.SpentAmount+amount)
+		err = s.budget_repo.UpdateSpentAmount(ctx, categoryID, budget.ID, budget.SpentAmount+amount)
 		if err != nil {
 			return err
 		}
@@ -189,7 +189,7 @@ func (s *ExpenseService) updateBudgetsAfterExpense(ctx context.Context, userID u
 }
 
 // restoreBudgetsAfterExpenseDeletion возвращает средства в бюджеты после удаления расхода
-func (s *ExpenseService) restoreBudgetsAfterExpenseDeletion(ctx context.Context, userID uint, categoryID uint, amount float64, expenseDate time.Time) error {
+func (s *ExpenseService) restoreBudgetsAfterExpenseDeletion(ctx context.Context, userID uint, categoryID int, amount float64, expenseDate time.Time) error {
 	// Получаем все активные бюджеты пользователя для данной категории
 	budgets, err := s.budget_repo.GetActiveBudgetsByCategoryAndDate(ctx, userID, categoryID, expenseDate)
 	if err != nil {
@@ -202,7 +202,7 @@ func (s *ExpenseService) restoreBudgetsAfterExpenseDeletion(ctx context.Context,
 		if newSpentAmount < 0 {
 			newSpentAmount = 0
 		}
-		err = s.budget_repo.UpdateSpentAmount(ctx, budget.ID, newSpentAmount)
+		err = s.budget_repo.UpdateSpentAmount(ctx, categoryID, budget.ID, newSpentAmount)
 		if err != nil {
 			return err
 		}
