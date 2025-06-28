@@ -40,8 +40,6 @@ type CategoryResponse struct {
 	ID          uint      `json:"id"`
 	Name        string    `json:"name"`
 	Description *string   `json:"description,omitempty"`
-	Color       string    `json:"color"`
-	Icon        *string   `json:"icon,omitempty"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 

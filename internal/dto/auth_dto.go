@@ -16,7 +16,7 @@ type RegisterRequest struct {
 
 // LoginRequest - данные для входа
 type LoginRequest struct {
-	UserID   uint   `json:"id"`
+	// UserID   uint   `json:"id"`
 	Email    string `json:"email" validate:"required,email" example:"user@example.com"`
 	Password string `json:"password" validate:"required" example:"password123"`
 }
