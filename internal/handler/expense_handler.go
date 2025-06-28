@@ -32,6 +32,14 @@ func (h *ExpenseHandler) CreateExpense(c *gin.Context) {
 		})
 		return
 	}
+	category_id, err := strconv.Atoi(c.Param("category_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+
+	}
 	var newexpense dto.CreateExpenseRequest
 	if err := c.BindJSON(&newexpense); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -48,7 +56,7 @@ func (h *ExpenseHandler) CreateExpense(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, dto.ExpenseResponse{
 		ID:           createdExpense.ID,
-		CategoryID:   createdExpense.CategoryID,
+		CategoryID:   uint(category_id),
 		CategoryName: createdExpense.Category.Name,
 		Amount:       createdExpense.Amount,
 		Description:  createdExpense.Description,
@@ -68,14 +76,22 @@ func (h *ExpenseHandler) GetExpense(c *gin.Context) {
 		})
 		return
 	}
-	expenseID, err := strconv.Atoi(c.Param("id"))
+	expenseID, err := strconv.Atoi(c.Param("expense_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	expense, err := h.expenseService.GetUserExpense(ctx, userID, expenseID)
+	category_id, err := strconv.Atoi(c.Param("category_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+
+	}
+	expense, err := h.expenseService.GetUserExpense(ctx, userID, category_id, expenseID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -104,7 +120,15 @@ func (h *ExpenseHandler) GetExpenses(c *gin.Context) {
 		})
 		return
 	}
-	expenses, err := h.expenseService.GetUserExpenses(ctx, userID)
+	category_id, err := strconv.Atoi(c.Param("category_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+
+	}
+	expenses, err := h.expenseService.GetUserExpenses(ctx, category_id, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -126,14 +150,21 @@ func (h *ExpenseHandler) DeleteExpense(c *gin.Context) {
 		})
 		return
 	}
-	expenseID, err := strconv.Atoi(c.Param("id"))
+	expenseID, err := strconv.Atoi(c.Param("expense_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid expense id",
 		})
 		return
 	}
-	if err := h.expenseService.DeleteExpense(ctx, userID, expenseID); err != nil {
+	categoryID, err := strconv.Atoi(c.Param("category_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid category id",
+		})
+		return
+	}
+	if err := h.expenseService.DeleteExpense(ctx, userID, categoryID, expenseID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -162,8 +193,15 @@ func (h *ExpenseHandler) GetAnalytics(c *gin.Context) {
 		})
 		return
 	}
+	categoryID, err := strconv.Atoi(c.Param("category_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid category id",
+		})
+		return
+	}
 
-	analytics, err := h.expenseService.GetExpenseAnalytics(ctx, userID, period)
+	analytics, err := h.expenseService.GetExpenseAnalytics(ctx, userID, categoryID, period)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

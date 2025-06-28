@@ -32,25 +32,33 @@ func (b *BudgetHandler) CreateBudget(c *gin.Context) {
 		})
 		return
 	}
+	category_id, err := strconv.Atoi(c.Param("category_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+
+	}
 	var budget dto.CreateBudgetRequest
 	if err := c.BindJSON(&budget); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	newbudget, err := b.budgetService.CreateBudget(ctx, userID, budget)
+	newbudget, err := b.budgetService.CreateBudget(ctx, userID, category_id, budget)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, dto.BudgetResponse{
 		ID:              newbudget.ID,
-		CategoryID:      newbudget.CategoryID,
+		CategoryID:      uint(category_id),
 		Amount:          newbudget.Amount,
 		CreatedAt:       newbudget.CreatedAt,
 		SpentAmount:     newbudget.SpentAmount,
 		RemainingAmount: newbudget.Amount - newbudget.SpentAmount,
 		Period:          newbudget.Period,
-		StartDate:       newbudget.StartDate,
+		StartDate:       newbudget.StartDate, // время складывать
 		EndDate:         newbudget.EndDate,
 	})
 }
@@ -65,7 +73,15 @@ func (b *BudgetHandler) GetBudgets(c *gin.Context) {
 		})
 		return
 	}
-	budgets, err := b.budgetService.GetUserBudgets(ctx, userID)
+	category_id, err := strconv.Atoi(c.Param("category_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+
+	}
+	budgets, err := b.budgetService.GetUserBudgets(ctx, userID, category_id)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -85,12 +101,20 @@ func (b *BudgetHandler) UpdateBudget(c *gin.Context) {
 		})
 		return
 	}
-	budgetID, err := strconv.Atoi(c.Param("id"))
+	budgetID, err := strconv.Atoi(c.Param("budget_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid budget id",
 		})
 		return
+	}
+	category_id, err := strconv.Atoi(c.Param("category_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+
 	}
 	var upbudget dto.UpdateBudgetRequest
 	if err := c.BindJSON(&upbudget); err != nil {
@@ -100,7 +124,7 @@ func (b *BudgetHandler) UpdateBudget(c *gin.Context) {
 		return
 	}
 
-	if err := b.budgetService.UpdateBudget(ctx, userID, budgetID, upbudget); err != nil {
+	if err := b.budgetService.UpdateBudget(ctx, userID, category_id, budgetID, upbudget); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 
@@ -121,14 +145,22 @@ func (b *BudgetHandler) DeleteBudget(c *gin.Context) {
 		})
 		return
 	}
-	budgetID, err := strconv.Atoi(c.Param("id"))
+	category_id, err := strconv.Atoi(c.Param("category_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+
+	}
+	budgetID, err := strconv.Atoi(c.Param("budget_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid budget id",
 		})
 		return
 	}
-	if err := b.budgetService.DeleteBudget(ctx, userID, budgetID); err != nil {
+	if err := b.budgetService.DeleteBudget(ctx, userID, category_id, budgetID); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
