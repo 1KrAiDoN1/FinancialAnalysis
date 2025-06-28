@@ -4,6 +4,7 @@ import (
 	"context"
 	"finance/internal/models"
 	storage "finance/internal/storages"
+	"time"
 )
 
 type ExpenseRepository struct {
@@ -46,4 +47,8 @@ func (e *ExpenseRepository) GetLargestExpenseByPeriod(ctx context.Context, userI
 
 func (e *ExpenseRepository) GetSmallestExpenseByPeriod(ctx context.Context, userID uint, period string) (models.Expense, error) {
 	return models.Expense{}, nil
+}
+
+func (e *ExpenseRepository) GetExpensesByCategoryAndPeriod(ctx context.Context, userID uint, categoryID uint, startDate, endDate *time.Time) ([]models.Expense, error) {
+	return nil, nil
 }

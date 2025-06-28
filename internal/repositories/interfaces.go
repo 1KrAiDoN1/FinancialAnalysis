@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"finance/internal/models"
+	"time"
 )
 
 type AuthRepositoryInterface interface {
@@ -50,6 +51,7 @@ type ExpenseRepositoryInterface interface {
 	DeleteExpense(ctx context.Context, userID uint, id uint) error
 	// Analytics and reporting methods
 	GetExpensesByCategory(ctx context.Context, userID uint, categoryID uint, limit, offset int) ([]models.Expense, error)
+	GetExpensesByCategoryAndPeriod(ctx context.Context, userID uint, categoryID uint, startDate, endDate *time.Time) ([]models.Expense, error)
 	// Aggregation methods
 	GetLargestExpenseByPeriod(ctx context.Context, userID uint, period string) (models.Expense, error)
 	GetSmallestExpenseByPeriod(ctx context.Context, userID uint, period string) (models.Expense, error)
@@ -64,4 +66,6 @@ type BudgetRepositoryInterface interface {
 	GetBudgetByUserID(ctx context.Context, userID uint) ([]models.Budget, error)
 	UpdateBudget(ctx context.Context, budget models.Budget) error
 	DeleteBudget(ctx context.Context, userID uint, id uint) error
+	UpdateSpentAmount(ctx context.Context, budgetID uint, spentAmount float64) error
+	GetActiveBudgetsByCategoryAndDate(ctx context.Context, userID uint, categoryID uint, date time.Time) ([]models.Budget, error)
 }

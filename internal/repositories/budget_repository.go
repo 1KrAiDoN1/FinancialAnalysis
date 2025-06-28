@@ -4,6 +4,7 @@ import (
 	"context"
 	"finance/internal/models"
 	storage "finance/internal/storages"
+	"time"
 )
 
 type BudgetRepository struct {
@@ -38,4 +39,13 @@ func (b *BudgetRepository) UpdateBudget(ctx context.Context, budget models.Budge
 }
 func (b *BudgetRepository) DeleteBudget(ctx context.Context, userID uint, id uint) error {
 	return nil
+}
+
+// UpdateSpentAmount обновляет потраченную сумму для бюджета
+func (b *BudgetRepository) UpdateSpentAmount(ctx context.Context, budgetID uint, spentAmount float64) error {
+	return nil
+}
+
+func (b *BudgetRepository) GetActiveBudgetsByCategoryAndDate(ctx context.Context, userID uint, categoryID uint, date time.Time) ([]models.Budget, error) {
+	return nil, nil
 }
