@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"finance/internal/dto"
+	"time"
 )
 
 type AuthServiceInterface interface {
@@ -39,6 +40,7 @@ type ExpenseServiceInterface interface {
 	GetUserExpenses(ctx context.Context, userID uint) ([]dto.ExpenseResponse, error)
 	DeleteExpense(ctx context.Context, userID uint, expenseID int) error
 	GetExpenseAnalytics(ctx context.Context, userID uint, period dto.ExpensePeriod) (dto.ExpenseAnalytics, error)
+	updateBudgetsAfterExpense(ctx context.Context, userID uint, categoryID uint, amount float64, expenseDate time.Time) error
 }
 
 type UserServiceInterface interface {
