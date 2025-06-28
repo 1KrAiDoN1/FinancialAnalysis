@@ -28,7 +28,7 @@ func (c *CategoryRepository) GetCategories(ctx context.Context, userID uint) ([]
 	return nil, nil
 }
 
-func (c *CategoryRepository) DeleteCategory(ctx context.Context, id int) error {
+func (c *CategoryRepository) DeleteCategory(ctx context.Context, userID uint, category_id int) error {
 	return nil
 }
 

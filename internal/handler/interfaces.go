@@ -13,7 +13,7 @@ type AuthHandlerInterface interface {
 type BudgetHandlerInterface interface {
 	CreateBudget(c *gin.Context)
 	GetBudgets(c *gin.Context)
-	UpdateBudget(c *gin.Context)
+	//UpdateBudget(c *gin.Context)
 	DeleteBudget(c *gin.Context)
 }
 

@@ -30,13 +30,13 @@ func (b *BudgetRepository) GetBudgetByID(ctx context.Context, userID uint, categ
 	return models.Budget{}, nil
 }
 
-// func (b *BudgetRepository) GetBudgetByUserID(ctx context.Context, category_id int, userID uint) ([]models.Budget, error) {
-// 	return nil, nil
-// }
-
-func (b *BudgetRepository) UpdateBudget(ctx context.Context, budget models.Budget) error {
+func (b *BudgetRepository) DeleteBudgetsInCategory(ctx context.Context, userID uint, categoryID int) error {
 	return nil
 }
+
+//	func (b *BudgetRepository) UpdateBudget(ctx context.Context, budget models.Budget) error {
+//		return nil
+//	}
 func (b *BudgetRepository) DeleteBudget(ctx context.Context, userID uint, category_id int, budget_id int) error {
 	return nil
 }

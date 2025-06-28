@@ -9,12 +9,16 @@ import (
 )
 
 type CategoryService struct {
-	repo repositories.CategoryRepositoryInterface
+	repo         repositories.CategoryRepositoryInterface
+	budget_repo  repositories.BudgetRepositoryInterface
+	expense_repo repositories.ExpenseRepositoryInterface
 }
 
-func NewCategoryService(repo repositories.CategoryRepositoryInterface) *CategoryService {
+func NewCategoryService(repo repositories.CategoryRepositoryInterface, budget_repo repositories.BudgetRepositoryInterface, expense_repo repositories.ExpenseRepositoryInterface) *CategoryService {
 	return &CategoryService{
-		repo: repo,
+		repo:         repo,
+		budget_repo:  budget_repo,
+		expense_repo: expense_repo,
 	}
 }
 
@@ -89,7 +93,15 @@ func (c *CategoryService) GetMostUsedCategories(ctx context.Context, userID uint
 }
 
 func (c *CategoryService) DeleteCategory(ctx context.Context, userID uint, categoryID int) error {
-	return c.repo.DeleteCategory(ctx, categoryID) // если мы удаляем категорию, то нужно удалить все расходы и бюджеты в этой категории
+	err := c.budget_repo.DeleteBudgetsInCategory(ctx, userID, categoryID)
+	if err != nil {
+		return err
+	}
+	err = c.expense_repo.DeleteExpensesInCategory(ctx, userID, categoryID)
+	if err != nil {
+		return nil
+	}
+	return c.repo.DeleteCategory(ctx, userID, categoryID)
 }
 
 func (c *CategoryService) GetAnalyticsByCategory(ctx context.Context, userID uint, categoryID int, period dto.CategoryPeriod) (dto.CategoryAnalytics, error) {

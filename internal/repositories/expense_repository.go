@@ -37,6 +37,10 @@ func (e *ExpenseRepository) DeleteExpense(ctx context.Context, userID uint, cate
 	return nil
 }
 
+func (e *ExpenseRepository) DeleteExpensesInCategory(ctx context.Context, userID uint, categoryID int) error {
+	return nil
+}
+
 func (e *ExpenseRepository) GetExpensesByCategory(ctx context.Context, userID uint, categoryID int, limit, offset int) ([]models.Expense, error) {
 	return nil, nil
 }
@@ -49,6 +53,6 @@ func (e *ExpenseRepository) GetSmallestExpenseByPeriod(ctx context.Context, user
 	return models.Expense{}, nil
 }
 
-func (e *ExpenseRepository) GetExpensesByCategoryAndPeriod(ctx context.Context, userID uint, categoryID int, startDate, endDate *time.Time) ([]models.Expense, error) {
+func (e *ExpenseRepository) GetExpensesByCategoryAndPeriod(ctx context.Context, userID uint, categoryID int, startDate, endDate time.Time) ([]models.Expense, error) {
 	return nil, nil
 }

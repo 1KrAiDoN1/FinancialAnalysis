@@ -2,7 +2,7 @@ package services
 
 import (
 	"context"
-	"errors"
+	//"errors"
 	"finance/internal/dto"
 	"finance/internal/models"
 	"finance/internal/repositories"
@@ -28,7 +28,7 @@ func (b *BudgetService) CreateBudget(ctx context.Context, userID uint, category_
 		Amount:      req.Amount,
 		SpentAmount: 0,
 		Period:      req.Period,
-		StartDate:   req.StartDate,
+		StartDate:   time.Now(),
 		EndDate:     req.EndDate,
 	}
 
@@ -38,7 +38,7 @@ func (b *BudgetService) CreateBudget(ctx context.Context, userID uint, category_
 	}
 
 	// Пересчитываем потраченную сумму для нового бюджета
-	err = b.recalculateBudgetSpentAmount(ctx, res_budget.ID, userID, category_id, req.StartDate, req.EndDate)
+	err = b.recalculateBudgetSpentAmount(ctx, &res_budget)
 	if err != nil {
 		return dto.BudgetResponse{}, err
 	}
@@ -52,7 +52,6 @@ func (b *BudgetService) CreateBudget(ctx context.Context, userID uint, category_
 		Period:          res_budget.Period,
 		StartDate:       res_budget.StartDate,
 		EndDate:         res_budget.EndDate,
-		CreatedAt:       res_budget.CreatedAt,
 	}, nil
 
 }
@@ -74,45 +73,44 @@ func (b *BudgetService) GetUserBudgets(ctx context.Context, userID uint, categor
 			Period:      budget.Period,
 			StartDate:   budget.StartDate,
 			EndDate:     budget.EndDate,
-			CreatedAt:   budget.CreatedAt,
 		}
 	}
 	return budgetResponses, nil
 }
 
-func (b *BudgetService) UpdateBudget(ctx context.Context, userID uint, category_id int, budgetID int, req dto.UpdateBudgetRequest) error {
-	existingBudget, err := b.repo.GetBudgetByID(ctx, userID, category_id, budgetID)
-	if err != nil {
-		return err
-	}
+// func (b *BudgetService) UpdateBudget(ctx context.Context, userID uint, category_id int, budgetID int, req dto.UpdateBudgetRequest) error {
+// 	existingBudget, err := b.repo.GetBudgetByID(ctx, userID, category_id, budgetID)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	// Проверяем права доступа
-	if existingBudget.UserID != userID {
-		return errors.New("budget not found or access denied")
-	}
+// 	// Проверяем права доступа
+// 	if existingBudget.UserID != userID {
+// 		return errors.New("budget not found or access denied")
+// 	}
 
-	// Создаем объект для обновления
-	updateData := models.Budget{
-		ID:         uint(budgetID),
-		UserID:     userID,
-		CategoryID: uint(category_id),
-		Amount:     *req.Amount,
-		Period:     *req.Period,
-		StartDate:  req.StartDate,
-		EndDate:    req.EndDate,
-	}
+// 	// Создаем объект для обновления
+// 	updateData := models.Budget{
+// 		ID:         uint(budgetID),
+// 		UserID:     userID,
+// 		CategoryID: uint(category_id),
+// 		Amount:     *req.Amount,
+// 		Period:     *req.Period,
+// 		StartDate:  req.StartDate,
+// 		EndDate:    req.EndDate,
+// 	}
 
-	// Обновляем через репозиторий
-	return b.repo.UpdateBudget(ctx, updateData)
-}
+// 	// Обновляем через репозиторий
+// 	return b.repo.UpdateBudget(ctx, updateData)
+// }
 
 func (b *BudgetService) DeleteBudget(ctx context.Context, userID uint, category_id int, budgetID int) error {
 	return b.repo.DeleteBudget(ctx, userID, category_id, budgetID)
 }
 
 // recalculateBudgetSpentAmount пересчитывает потраченную сумму для бюджета
-func (b *BudgetService) recalculateBudgetSpentAmount(ctx context.Context, budgetID, userID uint, categoryID int, startDate, endDate *time.Time) error {
-	expenses, err := b.expense_repo.GetExpensesByCategoryAndPeriod(ctx, userID, categoryID, startDate, endDate)
+func (b *BudgetService) recalculateBudgetSpentAmount(ctx context.Context, budget *models.Budget) error {
+	expenses, err := b.expense_repo.GetExpensesByCategoryAndPeriod(ctx, budget.UserID, int(budget.CategoryID), budget.StartDate, budget.EndDate)
 	if err != nil {
 		return err
 	}
@@ -121,6 +119,6 @@ func (b *BudgetService) recalculateBudgetSpentAmount(ctx context.Context, budget
 	for _, expense := range expenses {
 		totalSpent += expense.Amount
 	}
-
-	return b.repo.UpdateSpentAmount(ctx, categoryID, budgetID, totalSpent)
+	budget.SpentAmount = totalSpent
+	return nil
 }

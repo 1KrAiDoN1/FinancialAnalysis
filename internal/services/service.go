@@ -15,7 +15,7 @@ func NewServices(repo *repositories.Repositories) *Services {
 		AuthServiceInterface:     NewAuthService(repo.AuthRepositoryInterface),
 		BudgetServiceInterface:   NewBudgetService(repo.BudgetRepositoryInterface, repo.ExpenseRepositoryInterface),
 		ExpenseServiceInterface:  NewExpenseService(repo.ExpenseRepositoryInterface, repo.BudgetRepositoryInterface),
-		CategoryServiceInterface: NewCategoryService(repo.CategoryRepositoryInterface),
+		CategoryServiceInterface: NewCategoryService(repo.CategoryRepositoryInterface, repo.BudgetRepositoryInterface, repo.ExpenseRepositoryInterface),
 		UserServiceInterface:     NewUserService(repo.UserRepositoryInterface),
 	}
 

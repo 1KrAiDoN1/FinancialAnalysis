@@ -42,7 +42,7 @@ func SetupBudgetRoutes(router *gin.RouterGroup, budgetHandler handler.BudgetHand
 	{
 		budgets.POST("", budgetHandler.CreateBudget)
 		budgets.GET("", budgetHandler.GetBudgets)
-		budgets.PUT("/:budget_id", budgetHandler.UpdateBudget)
+		//budgets.PUT("/:budget_id", budgetHandler.UpdateBudget)
 		budgets.DELETE("/:budget_id", budgetHandler.DeleteBudget)
 	}
 }

@@ -91,49 +91,49 @@ func (b *BudgetHandler) GetBudgets(c *gin.Context) {
 	})
 }
 
-func (b *BudgetHandler) UpdateBudget(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
-	defer cancel()
-	userID, err := middleware.GetUserId(c)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	budgetID, err := strconv.Atoi(c.Param("budget_id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid budget id",
-		})
-		return
-	}
-	category_id, err := strconv.Atoi(c.Param("category_id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
+// func (b *BudgetHandler) UpdateBudget(c *gin.Context) {
+// 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
+// 	defer cancel()
+// 	userID, err := middleware.GetUserId(c)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"error": err.Error(),
+// 		})
+// 		return
+// 	}
+// 	budgetID, err := strconv.Atoi(c.Param("budget_id"))
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"error": "invalid budget id",
+// 		})
+// 		return
+// 	}
+// 	category_id, err := strconv.Atoi(c.Param("category_id"))
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"error": err.Error(),
+// 		})
+// 		return
 
-	}
-	var upbudget dto.UpdateBudgetRequest
-	if err := c.BindJSON(&upbudget); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid request",
-		})
-		return
-	}
+// 	}
+// 	var upbudget dto.UpdateBudgetRequest
+// 	if err := c.BindJSON(&upbudget); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"error": "invalid request",
+// 		})
+// 		return
+// 	}
 
-	if err := b.budgetService.UpdateBudget(ctx, userID, category_id, budgetID, upbudget); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+// 	if err := b.budgetService.UpdateBudget(ctx, userID, category_id, budgetID, upbudget); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
 
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"message": "budget updated successfully",
-	})
+// 	}
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"message": "budget updated successfully",
+// 	})
 
-}
+// }
 
 func (b *BudgetHandler) DeleteBudget(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
