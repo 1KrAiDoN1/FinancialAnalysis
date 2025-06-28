@@ -17,14 +17,15 @@ type Expense struct {
 }
 
 type Budget struct {
-	ID         uint       `json:"budget_id"`
-	UserID     uint       `json:"user_id"`
-	CategoryID uint       `json:"category_id"`
-	Amount     float64    `json:"amount"`
-	Period     string     `json:"period"` // monthly, weekly, yearly
-	StartDate  *time.Time `json:"start_date,omitempty"`
-	EndDate    *time.Time `json:"end_date,omitempty"`
-	CreatedAt  time.Time  `json:"created_at"`
+	ID          uint       `json:"budget_id"`
+	UserID      uint       `json:"user_id"`
+	CategoryID  uint       `json:"category_id"`
+	Amount      float64    `json:"amount"`
+	SpentAmount float64    `json:"spent_amount"`
+	Period      string     `json:"period"` // monthly, weekly, yearly
+	StartDate   *time.Time `json:"start_date,omitempty"`
+	EndDate     *time.Time `json:"end_date,omitempty"`
+	CreatedAt   time.Time  `json:"created_at"`
 }
 
 type Category struct {
@@ -32,8 +33,7 @@ type Category struct {
 	UserID uint   `json:"user_id"`
 	Name   string `json:"category_name"`
 	// Timestamps
-	CreatedAt time.Time  `json:"created_at"`
-	DeletedAt *time.Time `json:"deleted_at"`
+	CreatedAt time.Time `json:"created_at"`
 	// Relationships
 	User     User      `json:"user,omitempty"`
 	Expenses []Expense `json:"expenses,omitempty"`
