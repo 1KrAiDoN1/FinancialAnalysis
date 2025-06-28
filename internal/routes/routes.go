@@ -16,16 +16,15 @@ func SetupAuthRoutes(router *gin.RouterGroup, authHandler handler.AuthHandlerInt
 }
 
 func SetupExpenseRoutes(router *gin.RouterGroup, expenseHandler handler.ExpenseHandlerInterface) {
-	expenses := router.Group("/expenses")
+	expenses := router.Group("/categories/:category_id/expenses")
 	{
 		expenses.POST("", expenseHandler.CreateExpense)
 		expenses.GET("", expenseHandler.GetExpenses)
-		expenses.GET("/:id", expenseHandler.GetExpense)
-		expenses.DELETE("/:id", expenseHandler.DeleteExpense)
+		expenses.GET("/:expense_id", expenseHandler.GetExpense)
+		expenses.DELETE("/:expense_id", expenseHandler.DeleteExpense)
 		expenses.GET("/analytics", expenseHandler.GetAnalytics)
 	}
 }
-
 func SetupCategoryRoutes(router *gin.RouterGroup, categoryHandler handler.CategoryHandlerInterface) {
 	categories := router.Group("/categories")
 	{
@@ -39,12 +38,12 @@ func SetupCategoryRoutes(router *gin.RouterGroup, categoryHandler handler.Catego
 }
 
 func SetupBudgetRoutes(router *gin.RouterGroup, budgetHandler handler.BudgetHandlerInterface) {
-	budgets := router.Group("/budgets")
+	budgets := router.Group("/categories/:category_id/budgets")
 	{
 		budgets.POST("", budgetHandler.CreateBudget)
 		budgets.GET("", budgetHandler.GetBudgets)
-		budgets.PUT("/:id", budgetHandler.UpdateBudget)
-		budgets.DELETE("/:id", budgetHandler.DeleteBudget)
+		budgets.PUT("/:budget_id", budgetHandler.UpdateBudget)
+		budgets.DELETE("/:budget_id", budgetHandler.DeleteBudget)
 	}
 }
 
