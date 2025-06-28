@@ -43,10 +43,15 @@ func (b *BudgetHandler) CreateBudget(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, dto.BudgetResponse{
-		ID:         newbudget.ID,
-		CategoryID: newbudget.CategoryID,
-		Amount:     newbudget.Amount,
-		CreatedAt:  newbudget.CreatedAt,
+		ID:              newbudget.ID,
+		CategoryID:      newbudget.CategoryID,
+		Amount:          newbudget.Amount,
+		CreatedAt:       newbudget.CreatedAt,
+		SpentAmount:     newbudget.SpentAmount,
+		RemainingAmount: newbudget.Amount - newbudget.SpentAmount,
+		Period:          newbudget.Period,
+		StartDate:       newbudget.StartDate,
+		EndDate:         newbudget.EndDate,
 	})
 }
 

@@ -23,6 +23,8 @@ func NewCategoryHandler(categoryService services.CategoryServiceInterface) *Cate
 }
 
 func (h *CategoryHandler) CreateCategory(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
+	defer cancel()
 	userID, err := middleware.GetUserId(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -30,9 +32,6 @@ func (h *CategoryHandler) CreateCategory(c *gin.Context) {
 		})
 		return
 	}
-
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
-	defer cancel()
 	var category dto.CreateCategoryRequest
 	if err := c.BindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -46,9 +45,11 @@ func (h *CategoryHandler) CreateCategory(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, dto.CategoryResponse{
-		ID:        newcategory.ID,
-		Name:      newcategory.Name,
-		CreatedAt: newcategory.CreatedAt,
+		ID:            newcategory.ID,
+		Name:          newcategory.Name,
+		CreatedAt:     newcategory.CreatedAt,
+		ExpensesCount: 0,
+		TotalAmount:   0,
 	})
 }
 
@@ -77,9 +78,11 @@ func (h *CategoryHandler) GetCategoryByID(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, dto.CategoryResponse{
-		ID:        category.ID,
-		Name:      category.Name,
-		CreatedAt: category.CreatedAt,
+		ID:            category.ID,
+		Name:          category.Name,
+		CreatedAt:     category.CreatedAt,
+		ExpensesCount: category.ExpensesCount,
+		TotalAmount:   category.TotalAmount,
 	})
 }
 

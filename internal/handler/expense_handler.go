@@ -52,6 +52,7 @@ func (h *ExpenseHandler) CreateExpense(c *gin.Context) {
 		CategoryName: createdExpense.Category.Name,
 		Amount:       createdExpense.Amount,
 		Description:  createdExpense.Description,
+		Date:         createdExpense.Date,
 		CreatedAt:    createdExpense.CreatedAt,
 	})
 
@@ -87,6 +88,7 @@ func (h *ExpenseHandler) GetExpense(c *gin.Context) {
 		CategoryName: expense.Category.Name,
 		Amount:       expense.Amount,
 		Description:  expense.Description,
+		Date:         expense.Date,
 		CreatedAt:    expense.CreatedAt,
 	})
 
