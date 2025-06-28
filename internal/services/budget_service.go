@@ -6,39 +6,53 @@ import (
 	"finance/internal/dto"
 	"finance/internal/models"
 	"finance/internal/repositories"
+	"time"
 )
 
 type BudgetService struct {
-	repo repositories.BudgetRepositoryInterface
+	repo         repositories.BudgetRepositoryInterface
+	expense_repo repositories.ExpenseRepositoryInterface
 }
 
-func NewBudgetService(repo repositories.BudgetRepositoryInterface) *BudgetService {
+func NewBudgetService(repo repositories.BudgetRepositoryInterface, expense_repo repositories.ExpenseRepositoryInterface) *BudgetService {
 	return &BudgetService{
-		repo: repo,
+		repo:         repo,
+		expense_repo: expense_repo,
 	}
 }
 
 func (b *BudgetService) CreateBudget(ctx context.Context, userID uint, req dto.CreateBudgetRequest) (dto.BudgetResponse, error) {
 	req_budget := models.Budget{
-		UserID:     req.UserID,
-		CategoryID: req.CategoryID,
-		Amount:     req.Amount,
-		Period:     req.Period,
-		StartDate:  req.StartDate,
-		EndDate:    req.EndDate,
+		UserID:      req.UserID,
+		CategoryID:  req.CategoryID,
+		Amount:      req.Amount,
+		SpentAmount: 0,
+		Period:      req.Period,
+		StartDate:   req.StartDate,
+		EndDate:     req.EndDate,
 	}
+
 	res_budget, err := b.repo.CreateBudget(ctx, req_budget)
 	if err != nil {
 		return dto.BudgetResponse{}, err
 	}
+
+	// Пересчитываем потраченную сумму для нового бюджета
+	err = b.recalculateBudgetSpentAmount(ctx, res_budget.ID, userID, req.CategoryID, req.StartDate, req.EndDate)
+	if err != nil {
+		return dto.BudgetResponse{}, err
+	}
+
 	return dto.BudgetResponse{
-		ID:         res_budget.ID,
-		CategoryID: res_budget.CategoryID,
-		Amount:     res_budget.Amount,
-		Period:     res_budget.Period,
-		StartDate:  res_budget.StartDate,
-		EndDate:    res_budget.EndDate,
-		CreatedAt:  res_budget.CreatedAt,
+		ID:              res_budget.ID,
+		CategoryID:      res_budget.CategoryID,
+		Amount:          res_budget.Amount,
+		SpentAmount:     res_budget.SpentAmount,
+		RemainingAmount: res_budget.Amount - res_budget.SpentAmount,
+		Period:          res_budget.Period,
+		StartDate:       res_budget.StartDate,
+		EndDate:         res_budget.EndDate,
+		CreatedAt:       res_budget.CreatedAt,
 	}, nil
 
 }
@@ -53,13 +67,14 @@ func (b *BudgetService) GetUserBudgets(ctx context.Context, userID uint) ([]dto.
 	// Преобразуем каждый элемент из models.Budget в dto.BudgetResponse
 	for i, budget := range budgets {
 		budgetResponses[i] = dto.BudgetResponse{
-			ID:         budget.ID,
-			CategoryID: budget.CategoryID,
-			Amount:     budget.Amount,
-			Period:     budget.Period,
-			StartDate:  budget.StartDate,
-			EndDate:    budget.EndDate,
-			CreatedAt:  budget.CreatedAt,
+			ID:          budget.ID,
+			CategoryID:  budget.CategoryID,
+			Amount:      budget.Amount,
+			SpentAmount: budget.SpentAmount,
+			Period:      budget.Period,
+			StartDate:   budget.StartDate,
+			EndDate:     budget.EndDate,
+			CreatedAt:   budget.CreatedAt,
 		}
 	}
 	return budgetResponses, nil
@@ -93,4 +108,19 @@ func (b *BudgetService) UpdateBudget(ctx context.Context, userID uint, budgetID 
 
 func (b *BudgetService) DeleteBudget(ctx context.Context, userID uint, budgetID int) error {
 	return b.repo.DeleteBudget(ctx, userID, uint(budgetID))
+}
+
+// recalculateBudgetSpentAmount пересчитывает потраченную сумму для бюджета
+func (b *BudgetService) recalculateBudgetSpentAmount(ctx context.Context, budgetID, userID, categoryID uint, startDate, endDate *time.Time) error {
+	expenses, err := b.expense_repo.GetExpensesByCategoryAndPeriod(ctx, userID, categoryID, startDate, endDate)
+	if err != nil {
+		return err
+	}
+
+	var totalSpent float64
+	for _, expense := range expenses {
+		totalSpent += expense.Amount
+	}
+
+	return b.repo.UpdateSpentAmount(ctx, budgetID, totalSpent)
 }

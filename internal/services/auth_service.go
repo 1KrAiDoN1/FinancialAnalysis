@@ -73,7 +73,7 @@ func (a *AuthService) SignIn(ctx context.Context, req dto.LoginRequest) (*dto.Au
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
-	user, err := a.repo.CheckUserVerification(ctx, req.Email, hashPassword)
+	user, err := a.repo.CheckUserVerification(ctx, req.Email, hashPassword) //нужно, чтобы возвращал всю информацию о пользователе(id, email, first name, last name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user by email: %w", err)
 	}

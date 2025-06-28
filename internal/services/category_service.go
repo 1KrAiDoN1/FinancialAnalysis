@@ -44,9 +44,11 @@ func (c *CategoryService) GetUserCategories(ctx context.Context, userID uint) ([
 	res := make([]dto.CategoryResponse, 0, len(categories))
 	for _, category := range categories {
 		res = append(res, dto.CategoryResponse{
-			ID:        category.ID,
-			Name:      category.Name,
-			CreatedAt: category.CreatedAt,
+			ID:            category.ID,
+			Name:          category.Name,
+			CreatedAt:     category.CreatedAt,
+			ExpensesCount: len(category.Expenses),
+			TotalAmount:   0, // сделать логику для подсчета общей суммы
 		})
 	}
 	return res, nil
@@ -59,14 +61,17 @@ func (c *CategoryService) GetCategoryByID(ctx context.Context, userID uint, cate
 	}
 
 	return dto.CategoryResponse{
-		ID:        category.ID,
-		Name:      category.Name,
-		CreatedAt: category.CreatedAt,
+		ID:            category.ID,
+		Name:          category.Name,
+		CreatedAt:     category.CreatedAt,
+		ExpensesCount: len(category.Expenses),
+		TotalAmount:   0, // сделать логику для подсчета общей суммы
+
 	}, nil
 }
 
 func (c *CategoryService) GetMostUsedCategories(ctx context.Context, userID uint) ([]dto.CategoryResponse, error) {
-	categories, err := c.repo.GetMostUsedCategories(ctx, userID)
+	categories, err := c.repo.GetMostUsedCategories(ctx, userID) // сделать логику сортировки по количеству расходов в каждой категории
 	if err != nil {
 		return nil, err
 	}
@@ -77,14 +82,14 @@ func (c *CategoryService) GetMostUsedCategories(ctx context.Context, userID uint
 			Name:          category.Name,
 			CreatedAt:     category.CreatedAt,
 			ExpensesCount: len(category.Expenses),
-			TotalAmount:   0,
+			TotalAmount:   0, // сделать логику для подсчета общей суммы
 		})
 	}
 	return res, nil
 }
 
 func (c *CategoryService) DeleteCategory(ctx context.Context, userID uint, categoryID int) error {
-	return c.repo.DeleteCategory(ctx, categoryID)
+	return c.repo.DeleteCategory(ctx, categoryID) // если мы удаляем категорию, то нужно удалить все расходы и бюджеты в этой категории
 }
 
 func (c *CategoryService) GetAnalyticsByCategory(ctx context.Context, userID uint, categoryID int, period dto.CategoryPeriod) (dto.CategoryAnalytics, error) {
@@ -100,11 +105,11 @@ func (c *CategoryService) GetAnalyticsByCategory(ctx context.Context, userID uin
 	if err != nil {
 		return dto.CategoryAnalytics{}, err
 	}
-	largest_expense, err := c.repo.GetLargestExpenseInCategory(ctx, userID, categoryID, period.Period)
+	largest_expense, err := c.repo.GetLargestExpenseInCategory(ctx, userID, categoryID, period.Period) // сделать логику для поиска самого большого расхода
 	if err != nil {
 		return dto.CategoryAnalytics{}, err
 	}
-	smallest_expense, err := c.repo.GetSmallestExpenseInCategory(ctx, userID, categoryID, period.Period)
+	smallest_expense, err := c.repo.GetSmallestExpenseInCategory(ctx, userID, categoryID, period.Period) // аналогично
 	if err != nil {
 		return dto.CategoryAnalytics{}, err
 	}

@@ -13,8 +13,8 @@ type Services struct { // создаем структуру, которая бу
 func NewServices(repo *repositories.Repositories) *Services {
 	return &Services{
 		AuthServiceInterface:     NewAuthService(repo.AuthRepositoryInterface),
-		BudgetServiceInterface:   NewBudgetService(repo.BudgetRepositoryInterface),
-		ExpenseServiceInterface:  NewExpenseService(repo.ExpenseRepositoryInterface),
+		BudgetServiceInterface:   NewBudgetService(repo.BudgetRepositoryInterface, repo.ExpenseRepositoryInterface),
+		ExpenseServiceInterface:  NewExpenseService(repo.ExpenseRepositoryInterface, repo.BudgetRepositoryInterface),
 		CategoryServiceInterface: NewCategoryService(repo.CategoryRepositoryInterface),
 		UserServiceInterface:     NewUserService(repo.UserRepositoryInterface),
 	}
