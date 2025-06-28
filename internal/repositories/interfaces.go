@@ -45,27 +45,27 @@ type CategoryRepositoryInterface interface {
 type ExpenseRepositoryInterface interface {
 	// Basic CRUD operations
 	CreateExpense(ctx context.Context, expense models.Expense) (models.Expense, error)
-	GetExpenseByID(ctx context.Context, userID uint, expense_id uint) (models.Expense, error)
-	GetExpensesByUserID(ctx context.Context, userID uint) ([]models.Expense, error)
-	GetExpensesByPeriod(ctx context.Context, userID uint, period string) ([]models.Expense, error)
-	DeleteExpense(ctx context.Context, userID uint, id uint) error
+	GetExpenseByID(ctx context.Context, userID uint, category_id int, expense_id uint) (models.Expense, error)
+	GetExpensesByUserID(ctx context.Context, category_id int, userID uint) ([]models.Expense, error)
+	GetExpensesByPeriod(ctx context.Context, userID uint, category_id int, period string) ([]models.Expense, error)
+	DeleteExpense(ctx context.Context, userID uint, category_id int, id uint) error
 	// Analytics and reporting methods
-	GetExpensesByCategory(ctx context.Context, userID uint, categoryID uint, limit, offset int) ([]models.Expense, error)
-	GetExpensesByCategoryAndPeriod(ctx context.Context, userID uint, categoryID uint, startDate, endDate *time.Time) ([]models.Expense, error)
+	GetExpensesByCategory(ctx context.Context, userID uint, categoryID int, limit, offset int) ([]models.Expense, error)
+	GetExpensesByCategoryAndPeriod(ctx context.Context, userID uint, categoryID int, startDate, endDate *time.Time) ([]models.Expense, error)
 	// Aggregation methods
-	GetLargestExpenseByPeriod(ctx context.Context, userID uint, period string) (models.Expense, error)
-	GetSmallestExpenseByPeriod(ctx context.Context, userID uint, period string) (models.Expense, error)
+	GetLargestExpenseByPeriod(ctx context.Context, userID uint, category_id int, period string) (models.Expense, error)
+	GetSmallestExpenseByPeriod(ctx context.Context, userID uint, category_id int, period string) (models.Expense, error)
 }
 
 // BudgetRepository handles budget data persistence
 type BudgetRepositoryInterface interface {
 	// Basic CRUD operations
 	CreateBudget(ctx context.Context, budget models.Budget) (models.Budget, error)
-	GetBudgetByID(ctx context.Context, userID uint, budget_id int) (models.Budget, error)
-	GetUserBudgets(ctx context.Context, userID uint) ([]models.Budget, error)
-	GetBudgetByUserID(ctx context.Context, userID uint) ([]models.Budget, error)
+	GetBudgetByID(ctx context.Context, userID uint, category_id int, budget_id int) (models.Budget, error)
+	GetUserBudgets(ctx context.Context, category_id int, userID uint) ([]models.Budget, error)
+	//GetBudgetByUserID(ctx context.Context, category_id int, userID uint) ([]models.Budget, error)
 	UpdateBudget(ctx context.Context, budget models.Budget) error
-	DeleteBudget(ctx context.Context, userID uint, id uint) error
-	UpdateSpentAmount(ctx context.Context, budgetID uint, spentAmount float64) error
-	GetActiveBudgetsByCategoryAndDate(ctx context.Context, userID uint, categoryID uint, date time.Time) ([]models.Budget, error)
+	DeleteBudget(ctx context.Context, userID uint, category_id int, budget_id int) error
+	UpdateSpentAmount(ctx context.Context, category_id int, budgetID uint, spentAmount float64) error
+	GetActiveBudgetsByCategoryAndDate(ctx context.Context, userID uint, categoryID int, date time.Time) ([]models.Budget, error)
 }
