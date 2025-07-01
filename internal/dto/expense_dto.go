@@ -29,7 +29,7 @@ type ExpenseResponse struct {
 	ID           uint             `json:"id"`
 	CategoryID   uint             `json:"category_id"`
 	CategoryName string           `json:"category_name"`
-	Category     CategoryResponse `json:"category"`
+	Category     CategoryResponse `json:"category,omitempty"`
 	Amount       float64          `json:"amount"`
 	Description  *string          `json:"description,omitempty"`
 	Date         time.Time        `json:"date"`

@@ -8,11 +8,11 @@ import "time"
 type CreateBudgetRequest struct {
 	UserID uint `json:"user_id"`
 	//CategoryID uint       `json:"category_id" validate:"required"`
-	Amount    float64   `json:"amount" validate:"required,gt=0" example:"500.00"`
-	Period    string    `json:"period" validate:"required,oneof=weekly monthly yearly" example:"monthly"`
-	StartDate time.Time `json:"start_date,omitempty"`
-	EndDate   time.Time `json:"end_date,omitempty"`
-	IsActive  bool      `json:"is_active" default:"true"`
+	Amount float64 `json:"amount" validate:"required,gt=0" example:"500.00"`
+	Period string  `json:"period" validate:"required,oneof=weekly monthly yearly" example:"monthly"`
+	//StartDate time.Time `json:"start_date,omitempty"`
+	//EndDate   time.Time `json:"end_date,omitempty"`
+	//IsActive  bool      `json:"is_active" default:"true"`
 }
 
 // // UpdateBudgetRequest - обновление бюджета
@@ -29,22 +29,22 @@ type CreateBudgetRequest struct {
 
 // BudgetResponse - информация о бюджете
 type BudgetResponse struct {
-	ID         uint             `json:"id"`
-	CategoryID uint             `json:"category_id"`
-	Category   CategoryResponse `json:"category"`
-	Amount     float64          `json:"amount"`
-	Period     string           `json:"period"`
-	StartDate  time.Time        `json:"start_date,omitempty"`
-	EndDate    time.Time        `json:"end_date,omitempty"`
-	IsActive   bool             `json:"is_active"`
-	CreatedAt  time.Time        `json:"created_at"`
-	UpdatedAt  time.Time        `json:"updated_at"`
+	ID         uint `json:"id"`
+	CategoryID uint `json:"category_id"`
+	//Category   CategoryResponse `json:"category"`
+	Amount          float64   `json:"amount"`
+	CreatedAt       time.Time `json:"created_at"`
+	SpentAmount     float64   `json:"spent_amount"`
+	RemainingAmount float64   `json:"remaining_amount"`
+	Period          string    `json:"period"`
+	StartDate       time.Time `json:"start_date,omitempty"`
+	EndDate         time.Time `json:"end_date,omitempty"`
+	//IsActive   bool             `json:"is_active"`
+	//UpdatedAt  time.Time        `json:"updated_at"`
 
 	// Статистика
-	SpentAmount     float64 `json:"spent_amount"`
-	RemainingAmount float64 `json:"remaining_amount"`
-	SpentPercentage float64 `json:"spent_percentage"`
-	DaysRemaining   int     `json:"days_remaining,omitempty"`
+	//SpentPercentage float64 `json:"spent_percentage"`
+	//DaysRemaining   int     `json:"days_remaining,omitempty"`
 }
 
 // BudgetsListResponse - список бюджетов

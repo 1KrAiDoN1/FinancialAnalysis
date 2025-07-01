@@ -4,7 +4,7 @@ import "time"
 
 // UserInfo - краткая информация о пользователе для ответа
 type UserInfo struct {
-	// ID        uint   `json:"id"`
+	ID        uint   `json:"id"`
 	Email     string `json:"email"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`

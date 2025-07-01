@@ -37,15 +37,13 @@ type CreateCategoryRequest struct {
 
 // CategoryResponse - информация о категории
 type CategoryResponse struct {
-	ID          uint      `json:"id"`
-	Name        string    `json:"name"`
-	Description *string   `json:"description,omitempty"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
-
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+	//Description *string   `json:"description"`
+	CreatedAt time.Time `json:"created_at"`
 	// Дополнительная информация
-	ExpensesCount int     `json:"expenses_count,omitempty"`
-	TotalAmount   float64 `json:"total_amount,omitempty"`
+	ExpensesCount int     `json:"expenses_count"`
+	TotalAmount   float64 `json:"total_amount"`
 }
 
 // CategoriesListResponse
