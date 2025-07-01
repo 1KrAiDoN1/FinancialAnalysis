@@ -35,9 +35,11 @@ type Category struct {
 	// Timestamps
 	CreatedAt time.Time `json:"created_at"`
 	// Relationships
-	User     User      `json:"user,omitempty"`
-	Expenses []Expense `json:"expenses,omitempty"`
-	Budgets  []Budget  `json:"budgets,omitempty"`
+	User         User      `json:"user,omitempty"`
+	Expenses     []Expense `json:"expenses,omitempty"`
+	Budgets      []Budget  `json:"budgets,omitempty"`
+	ExpenseCount int       `json:"expense_count"`
+	TotalAmount  float64   `json:"total_amount"`
 }
 
 type AccessToken struct {
@@ -53,10 +55,10 @@ type RefreshToken struct {
 }
 
 type UserStats struct {
-	TotalExpenses   float64    `json:"total_expenses"`
-	TotalCategories int        `json:"total_categories"`
-	TotalBudgets    int        `json:"total_budgets"`
-	MonthlyExpenses float64    `json:"monthly_expenses"`
-	WeeklyExpenses  float64    `json:"weekly_expenses"`
-	TopCategories   []Category `json:"categories"`
+	TotalExpenses   float64 `json:"total_expenses"`
+	TotalCategories int     `json:"total_categories"`
+	TotalBudgets    int     `json:"total_budgets"`
+	MonthlyExpenses float64 `json:"monthly_expenses"`
+	WeeklyExpenses  float64 `json:"weekly_expenses"`
+	// TopCategories   []Category `json:"categories"`
 }
