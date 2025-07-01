@@ -45,7 +45,7 @@ func (s *UserService) GetUserStats(ctx context.Context, userID uint) (dto.UserSt
 		TotalBudgets:    userstats.TotalBudgets,
 		MonthlyExpenses: userstats.MonthlyExpenses,
 		WeeklyExpenses:  userstats.WeeklyExpenses,
-		TopCategories:   nil,
+		// TopCategories:   nil,
 	}
 	return res_stats, nil
 }

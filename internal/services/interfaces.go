@@ -12,9 +12,9 @@ type AuthServiceInterface interface {
 	GenerateRefreshToken() (dto.RefreshTokenRequest, error)
 	GenerateAccessToken(userID int) (dto.AccessTokenRequest, error)
 	ValidateToken(ctx context.Context, req dto.AccessTokenRequest) (*dto.UserID, error)
-	GetUserIDbyRefreshToken(refresh_token string) (int, error)
-	RemoveOldRefreshToken(userID int) error
-	SaveNewRefreshToken(token dto.RefreshTokenRequest) error
+	GetUserIDbyRefreshToken(ctx context.Context, refresh_token string) (int, error)
+	RemoveOldRefreshToken(ctx context.Context, userID int) error
+	SaveNewRefreshToken(ctx context.Context, user_id int, token dto.RefreshTokenRequest) error
 }
 
 type BudgetServiceInterface interface {

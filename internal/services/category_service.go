@@ -53,8 +53,8 @@ func (c *CategoryService) GetUserCategories(ctx context.Context, userID uint) ([
 			ID:            category.ID,
 			Name:          category.Name,
 			CreatedAt:     category.CreatedAt,
-			ExpensesCount: len(category.Expenses),
-			TotalAmount:   0, // сделать логику для подсчета общей суммы
+			ExpensesCount: category.ExpenseCount,
+			TotalAmount:   category.TotalAmount,
 		})
 	}
 	return res, nil
@@ -70,9 +70,8 @@ func (c *CategoryService) GetCategoryByID(ctx context.Context, userID uint, cate
 		ID:            category.ID,
 		Name:          category.Name,
 		CreatedAt:     category.CreatedAt,
-		ExpensesCount: len(category.Expenses),
-		TotalAmount:   0, // сделать логику для подсчета общей суммы
-
+		ExpensesCount: category.ExpenseCount,
+		TotalAmount:   category.TotalAmount,
 	}, nil
 }
 
@@ -87,8 +86,8 @@ func (c *CategoryService) GetMostUsedCategories(ctx context.Context, userID uint
 			ID:            category.ID,
 			Name:          category.Name,
 			CreatedAt:     category.CreatedAt,
-			ExpensesCount: len(category.Expenses),
-			TotalAmount:   0, // сделать логику для подсчета общей суммы
+			ExpensesCount: category.ExpenseCount,
+			TotalAmount:   category.TotalAmount,
 		})
 	}
 	return res, nil

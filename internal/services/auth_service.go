@@ -76,7 +76,7 @@ func (a *AuthService) SignIn(ctx context.Context, req dto.LoginRequest) (*dto.Au
 	}
 	user, err := a.repo.CheckUserVerification(ctx, req.Email, hashPassword) //нужно, чтобы возвращал всю информацию о пользователе(id, email, first name, last name)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get user by email: %w", err)
+		return nil, fmt.Errorf("user not found: %w", err)
 	}
 	accesstoken, err := a.GenerateAccessToken(user.ID)
 	if err != nil {
@@ -197,18 +197,18 @@ func HashPassword(Password string) (string, error) {
 
 }
 
-func (a *AuthService) GetUserIDbyRefreshToken(refresh_token string) (int, error) {
-	return a.repo.GetUserIDbyRefreshToken(refresh_token)
+func (a *AuthService) GetUserIDbyRefreshToken(ctx context.Context, refresh_token string) (int, error) {
+	return a.repo.GetUserIDbyRefreshToken(ctx, refresh_token)
 }
 
-func (a *AuthService) RemoveOldRefreshToken(userID int) error {
-	return a.repo.RemoveOldRefreshToken(userID)
+func (a *AuthService) RemoveOldRefreshToken(ctx context.Context, userID int) error {
+	return a.repo.RemoveOldRefreshToken(ctx, userID)
 }
 
-func (a *AuthService) SaveNewRefreshToken(token dto.RefreshTokenRequest) error {
+func (a *AuthService) SaveNewRefreshToken(ctx context.Context, user_id int, token dto.RefreshTokenRequest) error {
 	refresh_token := models.RefreshToken{
 		Token:     token.RefreshToken,
 		ExpiresAt: token.ExpiresAt,
 	}
-	return a.repo.SaveNewRefreshToken(refresh_token)
+	return a.repo.SaveNewRefreshToken(ctx, user_id, refresh_token)
 }

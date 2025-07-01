@@ -35,19 +35,23 @@ func (s *ExpenseService) CreateExpense(ctx context.Context, userID uint, req dto
 	}
 
 	// Обновляем бюджеты после создания расхода
-	err = s.updateBudgetsAfterExpense(ctx, userID, int(req.CategoryID), req.Amount, req.Date)
-	if err != nil {
-		return dto.ExpenseResponse{}, err
-	}
+	// err = s.updateBudgetsAfterExpense(ctx, userID, int(req.CategoryID), req.Amount, req.Date)
+	// if err != nil {
+	// 	return dto.ExpenseResponse{}, err
+	// }
 
 	return dto.ExpenseResponse{
-		ID:           res_expense.ID,
-		CategoryID:   res_expense.CategoryID,
-		CategoryName: res_expense.CategoryName,
-		Amount:       res_expense.Amount,
-		Description:  &res_expense.Description,
-		Date:         res_expense.Date,
-		CreatedAt:    req_expense.CreatedAt,
+		ID: res_expense.ID,
+		// CategoryID:   res_expense.CategoryID,
+		// CategoryName: res_expense.CategoryName,
+		Category: dto.CategoryResponse{
+			ID:   res_expense.CategoryID,
+			Name: res_expense.CategoryName,
+		},
+		Amount:      res_expense.Amount,
+		Description: &res_expense.Description,
+		Date:        res_expense.Date,
+		CreatedAt:   req_expense.CreatedAt,
 	}, nil
 }
 
