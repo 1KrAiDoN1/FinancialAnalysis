@@ -27,8 +27,8 @@ type UpdateExpenseRequest struct {
 // ExpenseResponse - информация о расходе
 type ExpenseResponse struct {
 	ID           uint             `json:"id"`
-	CategoryID   uint             `json:"category_id"`
-	CategoryName string           `json:"category_name"`
+	CategoryID   uint             `json:"category_id,omitempty"`
+	CategoryName string           `json:"category_name,omitempty"`
 	Category     CategoryResponse `json:"category,omitempty"`
 	Amount       float64          `json:"amount"`
 	Description  *string          `json:"description,omitempty"`

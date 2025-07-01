@@ -33,10 +33,10 @@ type ChangePasswordRequest struct {
 
 // UserStats - статистика пользователя
 type UserStats struct {
-	TotalExpenses   float64           `json:"total_expenses"`
-	TotalCategories int               `json:"total_categories"`
-	TotalBudgets    int               `json:"total_budgets"`
-	MonthlyExpenses float64           `json:"monthly_expenses"`
-	WeeklyExpenses  float64           `json:"weekly_expenses"`
-	TopCategories   []CategoryExpense `json:"top_categories"`
+	TotalExpenses   float64 `json:"total_expenses"`
+	TotalCategories int     `json:"total_categories"`
+	TotalBudgets    int     `json:"total_budgets"`
+	MonthlyExpenses float64 `json:"monthly_expenses"`
+	WeeklyExpenses  float64 `json:"weekly_expenses"`
+	// TopCategories   []CategoryExpense `json:"top_categories"`
 }
