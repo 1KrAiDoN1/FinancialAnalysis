@@ -18,7 +18,12 @@ func NewExpenseRepository(storage storage.ExpenseStorageInterface) *ExpenseRepos
 }
 
 func (e *ExpenseRepository) CreateExpense(ctx context.Context, expense models.Expense) (models.Expense, error) {
-	return models.Expense{}, nil
+	query := `INSERT INTO expenses (user_id, category_id, amount, description, date, created_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, category_id, amount, description, date, created_at`
+	result, err := e.storage.CreateExpense(ctx, query, expense)
+	if err != nil {
+		return models.Expense{}, err
+	}
+	return result, nil
 }
 
 func (e *ExpenseRepository) GetExpenseByID(ctx context.Context, userID uint, category_id int, id uint) (models.Expense, error) {

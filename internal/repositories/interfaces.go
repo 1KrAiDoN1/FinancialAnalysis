@@ -9,12 +9,10 @@ import (
 type AuthRepositoryInterface interface {
 	// Операции с пользователями
 	CreateUser(ctx context.Context, user *models.User) (*models.User, error)
-	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
-	GetUserByID(ctx context.Context, userID uint) (*models.User, error)
-	GetUserIDbyRefreshToken(refresh_token string) (int, error)
-	RemoveOldRefreshToken(userID int) error
-	SaveNewRefreshToken(token models.RefreshToken) error
-	CheckUserVerification(ctx context.Context, email string, hash_password string) (*models.User, error)
+	GetUserIDbyRefreshToken(ctx context.Context, refresh_token string) (int, error)
+	RemoveOldRefreshToken(ctx context.Context, userID int) error
+	SaveNewRefreshToken(ctx context.Context, user_id int, token models.RefreshToken) error
+	CheckUserVerification(ctx context.Context, email string, hash_password string) (models.User, error)
 	// Проверка существования
 	UserExistsByEmail(ctx context.Context, email string) (bool, error)
 }
@@ -64,8 +62,6 @@ type BudgetRepositoryInterface interface {
 	CreateBudget(ctx context.Context, budget models.Budget) (models.Budget, error)
 	GetBudgetByID(ctx context.Context, userID uint, category_id int, budget_id int) (models.Budget, error)
 	GetUserBudgets(ctx context.Context, category_id int, userID uint) ([]models.Budget, error)
-	//GetBudgetByUserID(ctx context.Context, category_id int, userID uint) ([]models.Budget, error)
-	//UpdateBudget(ctx context.Context, budget models.Budget) error
 	DeleteBudget(ctx context.Context, userID uint, category_id int, budget_id int) error
 	DeleteBudgetsInCategory(ctx context.Context, userID uint, categoryID int) error
 	UpdateSpentAmount(ctx context.Context, category_id int, budgetID uint, spentAmount float64) error

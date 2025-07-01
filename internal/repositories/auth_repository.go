@@ -31,27 +31,51 @@ func (r *AuthRepository) CreateUser(ctx context.Context, user *models.User) (*mo
 	}, nil
 }
 
-func (r *AuthRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
-	return &models.User{}, nil // логика для получения пользователя по email
-}
-
-func (r *AuthRepository) CheckUserVerification(ctx context.Context, email string, hashpassword string) (*models.User, error) {
-	return &models.User{}, nil // логика для проверки пользователя
-}
-func (r *AuthRepository) GetUserByID(ctx context.Context, userID uint) (*models.User, error) {
-	return &models.User{}, nil // логика для получения пользователя по id
+func (r *AuthRepository) CheckUserVerification(ctx context.Context, email string, hashpassword string) (models.User, error) {
+	query := `SELECT id, first_name, last_name, email FROM users WHERE email = $1 AND password = $2`
+	result, err := r.storage.CheckUserVerification(ctx, query, email, hashpassword)
+	if err != nil {
+		return models.User{}, err
+	}
+	return models.User{
+		ID:        result.ID,
+		Email:     result.Email,
+		FirstName: result.FirstName,
+		LastName:  result.LastName,
+	}, nil
 }
 
 func (r *AuthRepository) UserExistsByEmail(ctx context.Context, email string) (bool, error) {
-	return false, nil
+	query := `SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)`
+	result, err := r.storage.UserExistsByEmail(ctx, query, email)
+	if err != nil {
+		return true, err
+	}
+	return result, nil
+
 }
 
-func (r *AuthRepository) GetUserIDbyRefreshToken(refresh_token string) (int, error) {
-	return 0, nil
+func (r *AuthRepository) GetUserIDbyRefreshToken(ctx context.Context, refresh_token string) (int, error) {
+	query := `SELECT user_id FROM refresh_tokens WHERE token = $1 AND expires_at > NOW()`
+	user_id, err := r.storage.GetUserIDbyRefreshToken(ctx, query, refresh_token)
+	if err != nil {
+		return 0, err
+	}
+	return user_id, nil
 }
-func (r *AuthRepository) RemoveOldRefreshToken(userID int) error {
+func (r *AuthRepository) RemoveOldRefreshToken(ctx context.Context, userID int) error {
+	query := `DELETE FROM refresh_tokens WHERE user_id = $1`
+	err := r.storage.RemoveOldRefreshToken(ctx, query, userID)
+	if err != nil {
+		return err
+	}
 	return nil
 }
-func (r *AuthRepository) SaveNewRefreshToken(token models.RefreshToken) error {
+func (r *AuthRepository) SaveNewRefreshToken(ctx context.Context, user_id int, token models.RefreshToken) error {
+	query := `INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)`
+	err := r.storage.SaveNewRefreshToken(ctx, query, user_id, token)
+	if err != nil {
+		return err
+	}
 	return nil
 }
