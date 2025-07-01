@@ -28,15 +28,17 @@ func (c *CategoryService) CreateCategory(ctx context.Context, userID uint, req d
 		UserID:    userID,
 		CreatedAt: time.Now(),
 	}
-	category_res, err := c.repo.CreateCategory(ctx, category_req)
+	category_res, err := c.repo.CreateCategory(ctx, category_req) // добавить проверку, что такой категории нет у пользователя
 	if err != nil {
 		return dto.CategoryResponse{}, err
 	}
 
 	return dto.CategoryResponse{
-		ID:        category_res.ID,
-		Name:      category_res.Name,
-		CreatedAt: category_res.CreatedAt,
+		ID:            category_res.ID,
+		Name:          category_res.Name,
+		CreatedAt:     category_req.CreatedAt,
+		ExpensesCount: 0, // TODO: get expenses count !!!!!
+		TotalAmount:   0,
 	}, nil
 }
 

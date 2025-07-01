@@ -6,6 +6,7 @@ import (
 	"finance/internal/dto"
 	"finance/internal/models"
 	"finance/internal/repositories"
+	"finance/pkg"
 	"time"
 )
 
@@ -22,14 +23,19 @@ func NewBudgetService(repo repositories.BudgetRepositoryInterface, expense_repo 
 }
 
 func (b *BudgetService) CreateBudget(ctx context.Context, userID uint, category_id int, req dto.CreateBudgetRequest) (dto.BudgetResponse, error) {
+	start_date := time.Now()
+	endDate, err := pkg.AddPeriodToDate(start_date, req.Period)
+	if err != nil {
+		return dto.BudgetResponse{}, err
+	}
 	req_budget := models.Budget{
 		UserID:      req.UserID,
 		CategoryID:  uint(category_id),
 		Amount:      req.Amount,
 		SpentAmount: 0,
 		Period:      req.Period,
-		StartDate:   time.Now(),
-		EndDate:     req.EndDate,
+		StartDate:   start_date,
+		EndDate:     endDate,
 	}
 
 	res_budget, err := b.repo.CreateBudget(ctx, req_budget)

@@ -61,6 +61,7 @@ func (a *AuthService) SignUp(ctx context.Context, req dto.RegisterRequest) (*dto
 		return nil, fmt.Errorf("failed to create user: %w", err)
 	}
 	return &dto.UserInfo{
+		ID:        uint(createdUser.ID),
 		Email:     createdUser.Email,
 		FirstName: req.FirstName,
 		LastName:  req.LastName,
@@ -90,6 +91,7 @@ func (a *AuthService) SignIn(ctx context.Context, req dto.LoginRequest) (*dto.Au
 		AccessToken:  accesstoken.AccessToken,
 		RefreshToken: refreshToken.RefreshToken,
 		User: dto.UserInfo{
+			ID:        uint(user.ID),
 			Email:     user.Email,
 			FirstName: user.FirstName,
 			LastName:  user.LastName,
@@ -116,7 +118,7 @@ func (a *AuthService) GenerateAccessToken(userID int) (dto.AccessTokenRequest, e
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(JWTokenTTL)),
 	})
-	err := godotenv.Load("/Users/pavelvasilev/Desktop/FinancialAnalysis/internal/storages/database/hash.env")
+	err := godotenv.Load("./internal/storages/database/hash.env")
 	if err != nil {
 		log.Fatal(err)
 		return dto.AccessTokenRequest{}, fmt.Errorf("failed to load environment file: %w", err)
@@ -137,7 +139,7 @@ func (a *AuthService) GenerateAccessToken(userID int) (dto.AccessTokenRequest, e
 
 func (a *AuthService) ValidateToken(ctx context.Context, req dto.AccessTokenRequest) (*dto.UserID, error) {
 
-	err := godotenv.Load("/Users/pavelvasilev/Desktop/FinancialAnalysis/internal/storages/database/hash.env")
+	err := godotenv.Load("./internal/storages/database/hash.env")
 	if err != nil {
 		return &dto.UserID{}, fmt.Errorf("failed to load environment file: %w", err)
 	}
@@ -180,7 +182,7 @@ func (a *AuthService) ValidateToken(ctx context.Context, req dto.AccessTokenRequ
 
 func HashPassword(Password string) (string, error) {
 	hash := sha1.New()
-	err := godotenv.Load("/Users/pavelvasilev/Desktop/FinancialAnalysis/internal/storages/database/hash.env")
+	err := godotenv.Load("./internal/storages/database/hash.env")
 	if err != nil {
 		log.Fatal(err)
 		return "", err
