@@ -50,7 +50,7 @@ func (h *AuthHandler) SignIn(c *gin.Context) {
 
 	token, err := h.authService.SignIn(ctx, userAuth)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 	middleware.SetRefreshTokenCookie(c, token.RefreshToken)
@@ -72,7 +72,7 @@ func (h *AuthHandler) SignIn(c *gin.Context) {
 func (h *AuthHandler) Logout(c *gin.Context) { //нужно придумать, как диактивировать access-токены, которые были выданы
 	refresh_token, err := c.Cookie("refresh_token")
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 	c.SetCookie(

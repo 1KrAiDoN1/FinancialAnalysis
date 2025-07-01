@@ -49,14 +49,14 @@ func AuthMiddleware(authService services.AuthServiceInterface) gin.HandlerFunc {
 				return
 			}
 			if refresh_token != "" {
-				userID, err := authService.GetUserIDbyRefreshToken(refresh_token) //нужно проверку сделать что refresh_token не истек
+				userID, err := authService.GetUserIDbyRefreshToken(ctx, refresh_token) //нужно проверку сделать что refresh_token не истек
 				if err != nil {
 					c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid refresh token"})
 					c.Abort()
 					return
 				}
 				if userID != 0 {
-					err = authService.RemoveOldRefreshToken(userID)
+					err = authService.RemoveOldRefreshToken(ctx, userID)
 					if err != nil {
 						c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove old refresh token"})
 						c.Abort()
@@ -74,7 +74,7 @@ func AuthMiddleware(authService services.AuthServiceInterface) gin.HandlerFunc {
 						c.Abort()
 						return
 					}
-					err = authService.SaveNewRefreshToken(new_refresh_token)
+					err = authService.SaveNewRefreshToken(ctx, userID, new_refresh_token)
 					if err != nil {
 						c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save new refresh token"})
 						c.Abort()
