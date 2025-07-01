@@ -42,7 +42,7 @@ func (h *UserHandler) GetProfile(c *gin.Context) {
 	})
 }
 
-func (h *UserHandler) DeleteAccount(c *gin.Context) {
+func (h *UserHandler) DeleteAccount(c *gin.Context) { // нужно придумать, как диактивировать токены, которые были выданы
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
 	defer cancel()
 	userID, err := middleware.GetUserId(c)

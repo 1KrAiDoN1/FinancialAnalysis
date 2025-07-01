@@ -63,7 +63,7 @@ func (h *CategoryHandler) GetCategoryByID(c *gin.Context) {
 		})
 		return
 	}
-	categoryID, err := strconv.Atoi(c.Param("id"))
+	categoryID, err := strconv.Atoi(c.Param("category_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid category id",
@@ -141,7 +141,7 @@ func (h *CategoryHandler) DeleteCategory(c *gin.Context) {
 		})
 		return
 	}
-	categoryID, err := strconv.Atoi(c.Param("id"))
+	categoryID, err := strconv.Atoi(c.Param("category_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid category id",
@@ -171,7 +171,7 @@ func (h *CategoryHandler) GetAnalyticsByCategory(c *gin.Context) {
 		})
 		return
 	}
-	categoryID, err := strconv.Atoi(c.Param("id"))
+	categoryID, err := strconv.Atoi(c.Param("category_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid category id",

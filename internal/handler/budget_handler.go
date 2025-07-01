@@ -58,7 +58,7 @@ func (b *BudgetHandler) CreateBudget(c *gin.Context) {
 		SpentAmount:     newbudget.SpentAmount,
 		RemainingAmount: newbudget.Amount - newbudget.SpentAmount,
 		Period:          newbudget.Period,
-		StartDate:       newbudget.StartDate, // время складывать
+		StartDate:       newbudget.StartDate,
 		EndDate:         newbudget.EndDate,
 	})
 }

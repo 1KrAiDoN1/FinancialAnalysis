@@ -5,6 +5,7 @@ import (
 	"errors"
 	"finance/internal/dto"
 	"finance/internal/services"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -36,7 +37,7 @@ func AuthMiddleware(authService services.AuthServiceInterface) gin.HandlerFunc {
 					c.Abort()
 					return
 				}
-				c.Set("user_id", userID)
+				c.Set("user_id", uint(userID.UserID))
 				c.Next()
 				return
 			}
@@ -48,7 +49,7 @@ func AuthMiddleware(authService services.AuthServiceInterface) gin.HandlerFunc {
 				return
 			}
 			if refresh_token != "" {
-				userID, err := authService.GetUserIDbyRefreshToken(refresh_token)
+				userID, err := authService.GetUserIDbyRefreshToken(refresh_token) //нужно проверку сделать что refresh_token не истек
 				if err != nil {
 					c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid refresh token"})
 					c.Abort()
@@ -81,7 +82,7 @@ func AuthMiddleware(authService services.AuthServiceInterface) gin.HandlerFunc {
 					}
 					c.Header("Authorization", "Bearer "+new_access_token.AccessToken)
 					SetRefreshTokenCookie(c, new_refresh_token.RefreshToken)
-					c.Set("user_id", userID)
+					c.Set("user_id", uint(userID))
 					c.Next()
 					return
 
@@ -103,12 +104,20 @@ func AuthMiddleware(authService services.AuthServiceInterface) gin.HandlerFunc {
 }
 
 func GetUserId(c *gin.Context) (uint, error) {
-	userID, ok := c.Get("userID")
-
+	userID, ok := c.Get("user_id")
 	if !ok {
-		return 0, errors.New("user ID not found in context")
+		return 0, errors.New("user_id not found in context")
 	}
-	return userID.(uint), nil
+
+	// Проверяем тип и конвертируем
+	switch v := userID.(type) {
+	case uint:
+		return v, nil
+	case int:
+		return uint(v), nil
+	default:
+		return 0, fmt.Errorf("invalid user_id type: %T", userID)
+	}
 }
 
 func SetRefreshTokenCookie(c *gin.Context, refresh_token string) {

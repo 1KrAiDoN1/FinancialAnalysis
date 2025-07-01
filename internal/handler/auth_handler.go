@@ -60,6 +60,7 @@ func (h *AuthHandler) SignIn(c *gin.Context) {
 		AccessToken:  token.AccessToken,
 		RefreshToken: token.RefreshToken,
 		User: dto.UserInfo{
+			ID:        token.User.ID,
 			Email:     token.User.Email,
 			FirstName: token.User.FirstName,
 			LastName:  token.User.LastName,
@@ -68,7 +69,7 @@ func (h *AuthHandler) SignIn(c *gin.Context) {
 	)
 }
 
-func (h *AuthHandler) Logout(c *gin.Context) {
+func (h *AuthHandler) Logout(c *gin.Context) { //нужно придумать, как диактивировать access-токены, которые были выданы
 	refresh_token, err := c.Cookie("refresh_token")
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
