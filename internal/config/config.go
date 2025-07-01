@@ -16,7 +16,7 @@ type Config struct {
 }
 
 func SetConfig() (Config, error) {
-	err := godotenv.Load("/Users/pavelvasilev/Desktop/FinancialAnalysis/internal/storages/database/DB_Config.env")
+	err := godotenv.Load("./internal/storages/database/DB_Config.env")
 	if err != nil {
 		log.Println("Ошибка при чтении конфигурации базы данных")
 		return Config{}, err
