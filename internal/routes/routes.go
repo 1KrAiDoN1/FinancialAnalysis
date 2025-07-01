@@ -30,10 +30,10 @@ func SetupCategoryRoutes(router *gin.RouterGroup, categoryHandler handler.Catego
 	{
 		categories.POST("", categoryHandler.CreateCategory)
 		categories.GET("", categoryHandler.GetCategories)
-		categories.GET("/:id", categoryHandler.GetCategoryByID)
+		categories.GET("/:category_id", categoryHandler.GetCategoryByID)
 		categories.GET("/top", categoryHandler.GetMostUsedCategories)
-		categories.DELETE("/:id", categoryHandler.DeleteCategory)
-		categories.GET("/analytics/:id", categoryHandler.GetAnalyticsByCategory)
+		categories.DELETE("/:category_id", categoryHandler.DeleteCategory)
+		categories.GET("/analytics/:category_id", categoryHandler.GetAnalyticsByCategory)
 	}
 }
 

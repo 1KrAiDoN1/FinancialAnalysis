@@ -17,8 +17,18 @@ func NewAuthRepository(storage storage.AuthStorageInterface) *AuthRepository { /
 }
 
 func (r *AuthRepository) CreateUser(ctx context.Context, user *models.User) (*models.User, error) {
+	query := `INSERT INTO users (first_name, last_name, email, password, time_of_registration) VALUES ($1, $2, $3, $4, $5) RETURNING id, email, first_name, last_name`
+	result, err := r.storage.CreateUser(ctx, query, user.FirstName, user.LastName, user.Email, user.Password, user.TimeOfRegistration)
+	if err != nil {
+		return nil, err
+	}
 
-	return &models.User{}, nil // логика для сохранения пользователя в базе данных и возвращение id пользователя
+	return &models.User{
+		ID:        result.ID,
+		Email:     result.Email,
+		FirstName: result.FirstName,
+		LastName:  result.LastName,
+	}, nil
 }
 
 func (r *AuthRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
@@ -33,7 +43,7 @@ func (r *AuthRepository) GetUserByID(ctx context.Context, userID uint) (*models.
 }
 
 func (r *AuthRepository) UserExistsByEmail(ctx context.Context, email string) (bool, error) {
-	return true, nil
+	return false, nil
 }
 
 func (r *AuthRepository) GetUserIDbyRefreshToken(refresh_token string) (int, error) {
