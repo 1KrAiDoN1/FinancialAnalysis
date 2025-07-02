@@ -118,11 +118,11 @@ func (c *CategoryService) GetAnalyticsByCategory(ctx context.Context, userID uin
 	if err != nil {
 		return dto.CategoryAnalytics{}, err
 	}
-	largest_expense, err := c.repo.GetLargestExpenseInCategory(ctx, userID, categoryID, period.Period) // сделать логику для поиска самого большого расхода
+	largest_expense, err := c.repo.GetLargestExpenseInCategory(ctx, userID, categoryID, period.Period)
 	if err != nil {
 		return dto.CategoryAnalytics{}, err
 	}
-	smallest_expense, err := c.repo.GetSmallestExpenseInCategory(ctx, userID, categoryID, period.Period) // аналогично
+	smallest_expense, err := c.repo.GetSmallestExpenseInCategory(ctx, userID, categoryID, period.Period)
 	if err != nil {
 		return dto.CategoryAnalytics{}, err
 	}

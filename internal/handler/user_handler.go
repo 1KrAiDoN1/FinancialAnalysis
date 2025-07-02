@@ -67,7 +67,7 @@ func (h *UserHandler) GetStats(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
-	stats, err := h.userService.GetUserStats(ctx, userID) // скорее всего логику нужно доработать (сортировку данных из репозитория)
+	stats, err := h.userService.GetUserStats(ctx, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

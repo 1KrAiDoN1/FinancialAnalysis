@@ -51,16 +51,130 @@ func (c *CategoryStorage) GetCategoryByID(ctx context.Context, query string, use
 	return category, nil
 }
 
-// func (c *CategoryStorage)
+func (c *CategoryStorage) GetCategories(ctx context.Context, query string, userID uint) ([]models.Category, error) {
+	rows, err := c.pool.Query(ctx, query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get categories: %w", err)
+	}
+	defer rows.Close()
 
-// func (c *CategoryStorage)
+	var categories []models.Category
+	for rows.Next() {
+		var category models.Category
+		if err := rows.Scan(
+			&category.ID,
+			&category.UserID,
+			&category.Name,
+			&category.CreatedAt,
+		); err != nil {
+			return nil, fmt.Errorf("failed to scan category: %w", err)
+		}
+		categories = append(categories, category)
+	}
 
-// func (c *CategoryStorage)
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating categories: %w", err)
+	}
 
-// func (c *CategoryStorage)
+	return categories, nil
+}
 
-// func (c *CategoryStorage)
+func (c *CategoryStorage) DeleteCategory(ctx context.Context, query string, userID uint, categoryID int) error {
+	result, err := c.pool.Exec(ctx, query, categoryID, userID)
+	if err != nil {
+		return fmt.Errorf("failed to delete category: %w", err)
+	}
 
-// func (c *CategoryStorage)
+	if result.RowsAffected() == 0 {
+		return fmt.Errorf("category not found or not owned by user")
+	}
 
-// func (c *CategoryStorage)
+	return nil
+}
+
+func (c *CategoryStorage) GetMostUsedCategories(ctx context.Context, query string, userID uint) ([]models.Category, error) {
+	rows, err := c.pool.Query(ctx, query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get most used categories: %w", err)
+	}
+	defer rows.Close()
+
+	var categories []models.Category
+	for rows.Next() {
+		var category models.Category
+		if err := rows.Scan(
+			&category.ID,
+			&category.UserID,
+			&category.Name,
+			&category.CreatedAt,
+			&category.ExpenseCount,
+		); err != nil {
+			return nil, fmt.Errorf("failed to scan category: %w", err)
+		}
+		categories = append(categories, category)
+	}
+
+	return categories, nil
+}
+
+func (c *CategoryStorage) GetTotalAmountInCategory(ctx context.Context, query string, userID uint, categoryID int, period string) (float64, error) {
+	var total float64
+	err := c.pool.QueryRow(ctx, query, userID, categoryID).Scan(&total)
+	if err != nil {
+		return 0, fmt.Errorf("failed to get total amount: %w", err)
+	}
+
+	return total, nil
+}
+
+func (c *CategoryStorage) GetLargestExpenseInCategory(ctx context.Context, query string, userID uint, categoryID int, period string) (models.Expense, error) {
+	var expense models.Expense
+	err := c.pool.QueryRow(ctx, query, userID, categoryID).Scan(
+		&expense.ID,
+		&expense.UserID,
+		&expense.CategoryID,
+		&expense.Amount,
+		&expense.Description,
+		&expense.Date,
+		&expense.CreatedAt,
+	)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return models.Expense{}, nil
+		}
+		return models.Expense{}, fmt.Errorf("failed to get largest expense: %w", err)
+	}
+
+	return expense, nil
+}
+
+func (c *CategoryStorage) GetSmallestExpenseInCategory(ctx context.Context, query string, userID uint, categoryID int, period string) (models.Expense, error) {
+	var expense models.Expense
+	err := c.pool.QueryRow(ctx, query, userID, categoryID).Scan(
+		&expense.ID,
+		&expense.UserID,
+		&expense.CategoryID,
+		&expense.Amount,
+		&expense.Description,
+		&expense.Date,
+		&expense.CreatedAt,
+	)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return models.Expense{}, nil
+		}
+		return models.Expense{}, fmt.Errorf("failed to get smallest expense: %w", err)
+	}
+
+	return expense, nil
+}
+
+func (c *CategoryStorage) GetExpenseCountInCategory(ctx context.Context, query string, userID uint, categoryID int, period string) (int, error) {
+	var count int
+	err := c.pool.QueryRow(ctx, query, userID, categoryID).Scan(&count)
+	if err != nil {
+		return 0, fmt.Errorf("failed to get expense count: %w", err)
+	}
+
+	return count, nil
+}

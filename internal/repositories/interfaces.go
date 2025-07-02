@@ -49,7 +49,7 @@ type ExpenseRepositoryInterface interface {
 	DeleteExpense(ctx context.Context, userID uint, category_id int, id uint) error
 	DeleteExpensesInCategory(ctx context.Context, userID uint, categoryID int) error
 	// Analytics and reporting methods
-	GetExpensesByCategory(ctx context.Context, userID uint, categoryID int, limit, offset int) ([]models.Expense, error)
+	GetExpensesByCategory(ctx context.Context, userID uint, categoryID int) ([]models.Expense, error)
 	GetExpensesByCategoryAndPeriod(ctx context.Context, userID uint, categoryID int, startDate, endDate time.Time) ([]models.Expense, error)
 	// Aggregation methods
 	GetLargestExpenseByPeriod(ctx context.Context, userID uint, category_id int, period string) (models.Expense, error)
@@ -58,7 +58,6 @@ type ExpenseRepositoryInterface interface {
 
 // BudgetRepository handles budget data persistence
 type BudgetRepositoryInterface interface {
-	// Basic CRUD operations
 	CreateBudget(ctx context.Context, budget models.Budget) (models.Budget, error)
 	GetBudgetByID(ctx context.Context, userID uint, category_id int, budget_id int) (models.Budget, error)
 	GetUserBudgets(ctx context.Context, category_id int, userID uint) ([]models.Budget, error)

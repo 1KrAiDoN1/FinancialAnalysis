@@ -23,6 +23,7 @@ CREATE TABLE expenses (
     description TEXT,
     date TIMESTAMP WITH TIME ZONE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    UNIQUE(user_id, category_id, date)
 );
 
 CREATE TABLE budgets (
