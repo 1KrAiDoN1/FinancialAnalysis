@@ -35,6 +35,12 @@ func NewDatabase(ctx context.Context, databaseURL string) (*Storage, error) {
 func (d *Storage) GetPool() *pgxpool.Pool {
 	return d.pool
 }
+func (d *Storage) Close() error {
+	if d.pool != nil {
+		d.pool.Close()
+	}
+	return nil
+}
 
 func NewDatabaseURL() (string, error) {
 	cfg, err := config.SetConfig()

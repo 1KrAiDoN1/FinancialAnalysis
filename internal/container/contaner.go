@@ -2,6 +2,8 @@ package container
 
 import (
 	"context"
+	"log"
+
 	//"finance/internal/config"
 	"finance/internal/handler"
 	"finance/internal/repositories"
@@ -46,4 +48,12 @@ func NewContainer() (*Container, error) {
 		Services:     services,
 		Handlers:     handlers,
 	}, nil
+}
+
+func (c *Container) Close() {
+	if c.DB != nil {
+		if err := c.DB.Close(); err != nil {
+			log.Printf("Error closing database: %v", err)
+		}
+	}
 }
