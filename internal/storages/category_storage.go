@@ -108,6 +108,7 @@ func (c *CategoryStorage) GetMostUsedCategories(ctx context.Context, query strin
 			&category.Name,
 			&category.CreatedAt,
 			&category.ExpenseCount,
+			&category.TotalAmount,
 		); err != nil {
 			return nil, fmt.Errorf("failed to scan category: %w", err)
 		}
@@ -133,6 +134,7 @@ func (c *CategoryStorage) GetLargestExpenseInCategory(ctx context.Context, query
 		&expense.ID,
 		&expense.UserID,
 		&expense.CategoryID,
+		&expense.CategoryName,
 		&expense.Amount,
 		&expense.Description,
 		&expense.Date,
@@ -154,6 +156,7 @@ func (c *CategoryStorage) GetSmallestExpenseInCategory(ctx context.Context, quer
 		&expense.ID,
 		&expense.UserID,
 		&expense.CategoryID,
+		&expense.CategoryName,
 		&expense.Amount,
 		&expense.Description,
 		&expense.Date,

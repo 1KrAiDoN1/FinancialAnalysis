@@ -35,7 +35,7 @@ type CategoryServiceInterface interface {
 }
 
 type ExpenseServiceInterface interface {
-	CreateExpense(ctx context.Context, userID uint, req dto.CreateExpenseRequest) (dto.ExpenseResponse, error)
+	CreateExpense(ctx context.Context, userID uint, category_id int, req dto.CreateExpenseRequest) (dto.ExpenseResponse, error)
 	GetUserExpense(ctx context.Context, userID uint, category_id int, expenseID int) (dto.ExpenseResponse, error)
 	GetUserExpenses(ctx context.Context, category_id int, userID uint) ([]dto.ExpenseResponse, error)
 	DeleteExpense(ctx context.Context, userID uint, category_id int, expenseID int) error

@@ -70,13 +70,10 @@ func (c *CategoryRepository) DeleteCategory(ctx context.Context, userID uint, ca
 
 func (c *CategoryRepository) GetMostUsedCategories(ctx context.Context, userID uint) ([]models.Category, error) {
 	query := `
-		SELECT c.id, c.user_id, c.name, c.created_at, COUNT(e.id) as expense_count
-		FROM categories c
-		LEFT JOIN expenses e ON c.id = e.category_id AND e.user_id = $1
-		WHERE c.user_id = $1
-		GROUP BY c.id
-		ORDER BY expense_count DESC
-		LIMIT 5`
+        SELECT c.id, c.user_id, c.name, c.created_at, COUNT(e.id) as expense_count, COALESCE(SUM(e.amount), 0) as total_amount
+        FROM categories c LEFT JOIN expenses e ON c.id = e.category_id AND e.user_id = $1
+        WHERE c.user_id = $1 GROUP BY c.id ORDER BY expense_count DESC LIMIT 5`
+
 	result, err := c.storage.GetMostUsedCategories(ctx, query, userID)
 	if err != nil {
 		return nil, err
@@ -103,7 +100,8 @@ func (c *CategoryRepository) GetTotalAmountInCategory(ctx context.Context, userI
 }
 
 func (c *CategoryRepository) GetLargestExpenseInCategory(ctx context.Context, userID uint, categoryID int, period string) (models.Expense, error) {
-	query := `SELECT id, user_id, category_id, amount, description, date, created_at FROM expenses WHERE user_id = $1 AND category_id = $2`
+	query := `SELECT e.id, e.user_id, e.category_id, c.name AS category_name, e.amount, e.description, e.date, e.created_at FROM expenses e JOIN 
+	categories c ON e.category_id = c.id WHERE e.user_id = $1 AND e.category_id = $2 AND e.amount > 0`
 
 	switch period {
 	case "weekly":
@@ -124,7 +122,8 @@ func (c *CategoryRepository) GetLargestExpenseInCategory(ctx context.Context, us
 }
 
 func (c *CategoryRepository) GetSmallestExpenseInCategory(ctx context.Context, userID uint, categoryID int, period string) (models.Expense, error) {
-	query := `SELECT id, user_id, category_id, amount, description, date, created_at FROM expenses WHERE user_id = $1 AND category_id = $2 AND amount > 0`
+	query := `SELECT e.id, e.user_id, e.category_id, c.name AS category_name, e.amount, e.description, e.date, e.created_at FROM expenses e JOIN 
+	categories c ON e.category_id = c.id WHERE e.user_id = $1 AND e.category_id = $2 AND e.amount > 0`
 
 	switch period {
 	case "weekly":
@@ -140,7 +139,7 @@ func (c *CategoryRepository) GetSmallestExpenseInCategory(ctx context.Context, u
 	if err != nil {
 		return models.Expense{}, err
 	}
-	return result, nil
+	return result, nil // надо чтобы название категории еще возвращало
 }
 
 func (c *CategoryRepository) GetExpenseCountInCategory(ctx context.Context, userID uint, categoryID int, period string) (int, error) {

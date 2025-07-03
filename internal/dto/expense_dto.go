@@ -6,7 +6,7 @@ import "time"
 
 // CreateExpenseRequest - создание расхода
 type CreateExpenseRequest struct {
-	CategoryID  uint      `json:"category_id" validate:"required"`
+	//CategoryID  uint      `json:"category_id" validate:"required"`
 	Amount      float64   `json:"amount" validate:"required,gt=0" example:"25.50"`
 	Description string    `json:"description,omitempty" validate:"omitempty,max=500"`
 	Date        time.Time `json:"date" validate:"required" example:"2024-01-15T10:30:00Z"`
@@ -26,14 +26,14 @@ type UpdateExpenseRequest struct {
 
 // ExpenseResponse - информация о расходе
 type ExpenseResponse struct {
-	ID           uint             `json:"id"`
-	CategoryID   uint             `json:"category_id,omitempty"`
-	CategoryName string           `json:"category_name,omitempty"`
-	Category     CategoryResponse `json:"category,omitempty"`
-	Amount       float64          `json:"amount"`
-	Description  *string          `json:"description,omitempty"`
-	Date         time.Time        `json:"date"`
-	CreatedAt    time.Time        `json:"created_at"`
+	ID           uint   `json:"id"`
+	CategoryID   uint   `json:"category_id,omitempty"`
+	CategoryName string `json:"category_name,omitempty"`
+	// Category     CategoryResponse `json:"category,omitempty"`
+	Amount      float64   `json:"amount"`
+	Description *string   `json:"description,omitempty"`
+	Date        time.Time `json:"date"`
+	CreatedAt   time.Time `json:"created_at"`
 	// UpdatedAt    time.Time        `json:"updated_at"`
 }
 

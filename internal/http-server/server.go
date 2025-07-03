@@ -1,7 +1,9 @@
 package server
 
 import (
+	//"context"
 	"context"
+	"finance/internal/config"
 	"finance/internal/container"
 	"finance/internal/middleware"
 	"finance/internal/routes"
@@ -16,9 +18,8 @@ import (
 )
 
 type Server struct {
-	container  *container.Container
-	router     *gin.Engine
-	httpServer *http.Server
+	container *container.Container
+	router    *gin.Engine
 }
 
 func NewServer(container *container.Container) *Server {
@@ -37,23 +38,16 @@ func NewServer(container *container.Container) *Server {
 
 func (s *Server) Run() error {
 	s.setupRoutes()
-	port := "8081"
-	// viper.AddConfigPath("config")
-	// viper.SetConfigName("config")
-	// err := viper.ReadInConfig()
-	// if err != nil {
-	// 	return fmt.Errorf("failed to read config: %w", err)
-	// }
-	// port := viper.GetString("port")
-	s.httpServer = &http.Server{
-		Addr:    ":" + port,
-		Handler: s.router,
+	serverPort, err := config.LoadConfigServer("./internal/config/config.yaml")
+	if err != nil {
+		return err
 	}
+
 	// Канал для ошибок сервера
 	serverErr := make(chan error, 1)
 	go func() {
-		fmt.Printf("Starting server on port %s\n", port)
-		if err := s.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		fmt.Printf("Starting server on port %s\n", serverPort.Port)
+		if err := s.router.Run(":" + serverPort.Port); err != nil {
 			serverErr <- fmt.Errorf("server error: %w", err)
 		}
 		close(serverErr)
@@ -69,18 +63,23 @@ func (s *Server) Run() error {
 		return err
 	case sig := <-quit:
 		fmt.Printf("Received signal: %s. Shutting down...\n", sig)
+		// Получаем доступ к внутреннему http.Server
+		srv := &http.Server{
+			Addr:    ":" + serverPort.Port,
+			Handler: s.router,
+		}
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		if err := srv.Shutdown(ctx); err != nil {
+			return fmt.Errorf("server shutdown failed: %w", err)
+		}
+
+		fmt.Println("Server gracefully stopped")
+		return nil
 	}
 
-	// Настройка graceful shutdown
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	if err := s.httpServer.Shutdown(ctx); err != nil {
-		return fmt.Errorf("forced shutdown: %w", err)
-	}
-
-	fmt.Println("Server gracefully stopped")
-	return nil
 }
 
 func (s *Server) setupRoutes() {

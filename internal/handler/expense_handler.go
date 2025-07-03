@@ -47,7 +47,7 @@ func (h *ExpenseHandler) CreateExpense(c *gin.Context) {
 		})
 		return
 	}
-	createdExpense, err := h.expenseService.CreateExpense(ctx, userID, newexpense)
+	createdExpense, err := h.expenseService.CreateExpense(ctx, userID, category_id, newexpense)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -57,7 +57,7 @@ func (h *ExpenseHandler) CreateExpense(c *gin.Context) {
 	c.JSON(http.StatusOK, dto.ExpenseResponse{
 		ID:           createdExpense.ID,
 		CategoryID:   uint(category_id),
-		CategoryName: createdExpense.Category.Name,
+		CategoryName: createdExpense.CategoryName, //!!!!!!!!!!!!!!!!!!
 		Amount:       createdExpense.Amount,
 		Description:  createdExpense.Description,
 		Date:         createdExpense.Date,
@@ -101,7 +101,7 @@ func (h *ExpenseHandler) GetExpense(c *gin.Context) {
 	c.JSON(http.StatusOK, dto.ExpenseResponse{
 		ID:           expense.ID,
 		CategoryID:   expense.CategoryID,
-		CategoryName: expense.Category.Name,
+		CategoryName: expense.CategoryName, // !!!!!!!!!!!!!!!!!!!!!!!!
 		Amount:       expense.Amount,
 		Description:  expense.Description,
 		Date:         expense.Date,
@@ -135,7 +135,7 @@ func (h *ExpenseHandler) GetExpenses(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK, dto.ExpensesListResponse{
+	c.JSON(http.StatusOK, dto.ExpensesListResponse{ // нужно возвращать инфу про категорию и дальше уже информвцию по каждому расходу
 		Expenses: expenses,
 	})
 }

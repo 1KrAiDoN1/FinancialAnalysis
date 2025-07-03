@@ -199,8 +199,8 @@ func (h *CategoryHandler) GetAnalyticsByCategory(c *gin.Context) {
 		TotalAmount:          category_analytics.TotalAmount,
 		ExpensesCount:        category_analytics.ExpensesCount,
 		AveragePerDay:        category_analytics.AveragePerDay,
+		AverageExpenseAmount: category_analytics.AverageExpenseAmount,
 		LargestExpense:       category_analytics.LargestExpense,
 		SmallestExpense:      category_analytics.SmallestExpense,
-		AverageExpenseAmount: category_analytics.AverageExpenseAmount,
 	})
 }

@@ -17,9 +17,9 @@ type CategoryAnalytics struct {
 	TotalAmount          float64         `json:"total_amount"`
 	ExpensesCount        int             `json:"expenses_count"`
 	AveragePerDay        float64         `json:"average_per_day"`
+	AverageExpenseAmount float64         `json:"average_expense_amount"`
 	LargestExpense       ExpenseResponse `json:"largest_expense"`
 	SmallestExpense      ExpenseResponse `json:"smallest_expense"`
-	AverageExpenseAmount float64         `json:"average_expense_amount"`
 }
 
 type CategoryPeriod struct {

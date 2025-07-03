@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 	"finance/internal/dto"
 	"finance/internal/models"
 	"finance/internal/repositories"
@@ -134,7 +135,7 @@ func (c *CategoryService) GetAnalyticsByCategory(ctx context.Context, userID uin
 	} else if period.Period == "yearly" {
 		timedist = 365
 	} else {
-		timedist = 0
+		return dto.CategoryAnalytics{}, errors.New("invalid period: No data of period")
 	}
 	averagePerDay := total_amount / timedist
 
@@ -161,6 +162,6 @@ func (c *CategoryService) GetAnalyticsByCategory(ctx context.Context, userID uin
 			Description:  &smallest_expense.Description,
 			CreatedAt:    smallest_expense.CreatedAt,
 		},
-		AverageExpenseAmount: float64(expense_count) / timedist,
+		AverageExpenseAmount: total_amount / float64(expense_count),
 	}, nil
 }
