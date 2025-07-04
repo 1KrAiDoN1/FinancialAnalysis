@@ -23,6 +23,20 @@ func NewBudgetHandler(budgetService services.BudgetServiceInterface) *BudgetHand
 	}
 }
 
+// CreateBudget godoc
+// @Summary Создание нового бюджета
+// @Description Создание нового бюджета для указанной категории
+// @Tags Budgets
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param category_id path int true "ID категории"
+// @Param budget body dto.CreateBudgetRequest true "Данные для создания бюджета"
+// @Success 200 {object} dto.BudgetResponse "Бюджет успешно создан"
+// @Failure 400 {object} dto.ErrorResponse "Ошибка валидации данных"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories/{category_id}/budgets [post]
 func (b *BudgetHandler) CreateBudget(c *gin.Context) {
 	log := logger.New("budget_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -85,6 +99,19 @@ func (b *BudgetHandler) CreateBudget(c *gin.Context) {
 	})
 }
 
+// GetBudgets godoc
+// @Summary Получение списка бюджетов
+// @Description Получение всех бюджетов пользователя для указанной категории
+// @Tags Budgets
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param category_id path int true "ID категории"
+// @Success 200 {object} dto.BudgetsListResponse "Список бюджетов"
+// @Failure 400 {object} dto.ErrorResponse "Неверный ID категории"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories/{category_id}/budgets [get]
 func (b *BudgetHandler) GetBudgets(c *gin.Context) {
 	log := logger.New("budget_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -129,6 +156,20 @@ func (b *BudgetHandler) GetBudgets(c *gin.Context) {
 	})
 }
 
+// DeleteBudget godoc
+// @Summary Удаление бюджета
+// @Description Удаление конкретного бюджета пользователя
+// @Tags Budgets
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param category_id path int true "ID категории"
+// @Param budget_id path int true "ID бюджета"
+// @Success 200 {object} map[string]string "Бюджет успешно удален"
+// @Failure 400 {object} dto.ErrorResponse "Неверный ID категории или бюджета"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories/{category_id}/budgets/{budget_id} [delete]
 func (b *BudgetHandler) DeleteBudget(c *gin.Context) {
 	log := logger.New("budget_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)

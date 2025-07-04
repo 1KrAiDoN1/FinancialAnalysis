@@ -23,6 +23,19 @@ func NewCategoryHandler(categoryService services.CategoryServiceInterface) *Cate
 	}
 }
 
+// CreateCategory godoc
+// @Summary Создание новой категории
+// @Description Создание новой категории расходов для пользователя
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param category body dto.CreateCategoryRequest true "Данные для создания категории"
+// @Success 200 {object} dto.CategoryResponse "Категория успешно создана"
+// @Failure 400 {object} dto.ErrorResponse "Ошибка валидации данных"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories [post]
 func (h *CategoryHandler) CreateCategory(c *gin.Context) {
 	log := logger.New("category_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -70,6 +83,20 @@ func (h *CategoryHandler) CreateCategory(c *gin.Context) {
 	})
 }
 
+// GetCategoryByID godoc
+// @Summary Получение категории по ID
+// @Description Получение информации о конкретной категории пользователя
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param category_id path int true "ID категории"
+// @Success 200 {object} dto.CategoryResponse "Информация о категории"
+// @Failure 400 {object} dto.ErrorResponse "Неверный ID категории"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 404 {object} dto.ErrorResponse "Категория не найдена"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories/{category_id} [get]
 func (h *CategoryHandler) GetCategoryByID(c *gin.Context) {
 	log := logger.New("category_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -116,6 +143,17 @@ func (h *CategoryHandler) GetCategoryByID(c *gin.Context) {
 	})
 }
 
+// GetCategories godoc
+// @Summary Получение списка категорий
+// @Description Получение всех категорий пользователя
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} dto.CategoriesListResponse "Список категорий"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories [get]
 func (h *CategoryHandler) GetCategories(c *gin.Context) {
 	log := logger.New("category_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -150,6 +188,17 @@ func (h *CategoryHandler) GetCategories(c *gin.Context) {
 	})
 }
 
+// GetMostUsedCategories godoc
+// @Summary Получение наиболее используемых категорий
+// @Description Получение списка категорий, отсортированных по частоте использования
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} dto.CategoriesListResponse "Список наиболее используемых категорий"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories/top [get]
 func (h *CategoryHandler) GetMostUsedCategories(c *gin.Context) {
 	log := logger.New("category_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -185,6 +234,19 @@ func (h *CategoryHandler) GetMostUsedCategories(c *gin.Context) {
 
 }
 
+// DeleteCategory godoc
+// @Summary Удаление категории
+// @Description Удаление категории и всех связанных с ней расходов
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param category_id path int true "ID категории"
+// @Success 200 {object} map[string]string "Категория успешно удалена"
+// @Failure 400 {object} dto.ErrorResponse "Неверный ID категории"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories/{category_id} [delete]
 func (h *CategoryHandler) DeleteCategory(c *gin.Context) {
 	log := logger.New("category_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -231,6 +293,20 @@ func (h *CategoryHandler) DeleteCategory(c *gin.Context) {
 
 }
 
+// GetAnalyticsByCategory godoc
+// @Summary Получение аналитики по категории
+// @Description Получение детальной аналитики расходов по конкретной категории
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param category_id path int true "ID категории"
+// @Param period body dto.CategoryPeriod true "Период для анализа"
+// @Success 200 {object} dto.CategoryAnalytics "Аналитика по категории"
+// @Failure 400 {object} dto.ErrorResponse "Неверный ID категории или период"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories/{category_id}/analytics [get]
 func (h *CategoryHandler) GetAnalyticsByCategory(c *gin.Context) {
 	log := logger.New("category_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)

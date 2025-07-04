@@ -7,6 +7,7 @@ import (
 )
 
 func SetupAuthRoutes(router *gin.RouterGroup, authHandler handler.AuthHandlerInterface) {
+
 	auth := router.Group("/auth")
 	{
 		auth.POST("/sign-up", authHandler.SignUp)

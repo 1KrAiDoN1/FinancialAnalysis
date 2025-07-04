@@ -11,7 +11,7 @@ type RegisterRequest struct {
 	ConfirmPassword    string    `json:"confirm_password" validate:"required,eqfield=Password"`
 	FirstName          string    `json:"first_name" validate:"required,min=2,max=50" example:"John"`
 	LastName           string    `json:"last_name" validate:"required,min=2,max=50" example:"Doe"`
-	TimeOfRegistration time.Time `json:"time_of_registration"`
+	TimeOfRegistration time.Time `json:"time_of_registration" example:"2024-01-15T10:30:00Z"`
 }
 
 // LoginRequest - данные для входа
@@ -41,7 +41,7 @@ type LogoutRequest struct {
 
 // AuthResponse - ответ после успешной аутентификации
 type AuthResponse struct {
-	AccessToken  string   `json:"access_token"`
-	RefreshToken string   `json:"refresh_token"`
+	AccessToken  string   `json:"access_token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."`
+	RefreshToken string   `json:"refresh_token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."`
 	User         UserInfo `json:"user"`
 }

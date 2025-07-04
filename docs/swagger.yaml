@@ -1,0 +1,997 @@
+basePath: /api/v1
+definitions:
+  dto.AuthResponse:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      user:
+        $ref: '#/definitions/dto.UserInfo'
+    type: object
+  dto.BudgetResponse:
+    properties:
+      amount:
+        description: Category   CategoryResponse `json:"category"`
+        type: number
+      category_id:
+        type: integer
+      created_at:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: integer
+      period:
+        type: string
+      remaining_amount:
+        type: number
+      spent_amount:
+        type: number
+      start_date:
+        type: string
+    type: object
+  dto.BudgetsListResponse:
+    properties:
+      budgets:
+        items:
+          $ref: '#/definitions/dto.BudgetResponse'
+        type: array
+    type: object
+  dto.CategoriesListResponse:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/dto.CategoryResponse'
+        type: array
+    type: object
+  dto.CategoryAnalytics:
+    properties:
+      average_expense_amount:
+        type: number
+      average_per_day:
+        type: number
+      category_id:
+        type: integer
+      category_name:
+        type: string
+      expenses_count:
+        type: integer
+      largest_expense:
+        $ref: '#/definitions/dto.ExpenseResponse'
+      period:
+        type: string
+      smallest_expense:
+        $ref: '#/definitions/dto.ExpenseResponse'
+      total_amount:
+        type: number
+    type: object
+  dto.CategoryPeriod:
+    properties:
+      period:
+        type: string
+    type: object
+  dto.CategoryResponse:
+    properties:
+      created_at:
+        description: Description *string   `json:"description"`
+        type: string
+      expenses_count:
+        description: Дополнительная информация
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      total_amount:
+        type: number
+    type: object
+  dto.CreateBudgetRequest:
+    properties:
+      amount:
+        description: CategoryID uint       `json:"category_id" validate:"required"`
+        example: 500
+        type: number
+      period:
+        enum:
+        - weekly
+        - monthly
+        - yearly
+        example: monthly
+        type: string
+      user_id:
+        type: integer
+    required:
+    - amount
+    - period
+    type: object
+  dto.CreateCategoryRequest:
+    properties:
+      category_name:
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - category_name
+    type: object
+  dto.CreateExpenseRequest:
+    properties:
+      amount:
+        description: CategoryID  uint      `json:"category_id" validate:"required"`
+        example: 25.5
+        type: number
+      date:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+      description:
+        maxLength: 500
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+    required:
+    - amount
+    - date
+    type: object
+  dto.ErrorResponse:
+    properties:
+      details:
+        additionalProperties:
+          type: string
+        type: object
+      error:
+        example: Validation failed
+        type: string
+      message:
+        example: Email is required
+        type: string
+    type: object
+  dto.ExpenseAnalytics:
+    properties:
+      average_expense_amount:
+        type: number
+      average_per_day:
+        type: number
+      expenses_count:
+        type: integer
+      largest_expense:
+        $ref: '#/definitions/dto.ExpenseResponse'
+      period:
+        type: string
+      smallest_expense:
+        $ref: '#/definitions/dto.ExpenseResponse'
+      total_amount:
+        type: number
+    type: object
+  dto.ExpensePeriod:
+    properties:
+      period:
+        type: string
+    type: object
+  dto.ExpenseResponse:
+    properties:
+      amount:
+        description: Category     CategoryResponse `json:"category,omitempty"`
+        type: number
+      category_id:
+        type: integer
+      category_name:
+        type: string
+      created_at:
+        type: string
+      date:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+    type: object
+  dto.ExpensesListResponse:
+    properties:
+      expenses:
+        items:
+          $ref: '#/definitions/dto.ExpenseResponse'
+        type: array
+    type: object
+  dto.LoginRequest:
+    properties:
+      email:
+        description: UserID   uint   `json:"id"`
+        example: user@example.com
+        type: string
+      password:
+        example: password123
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.RegisterRequest:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        example: user@example.com
+        type: string
+      first_name:
+        example: John
+        maxLength: 50
+        minLength: 2
+        type: string
+      last_name:
+        example: Doe
+        maxLength: 50
+        minLength: 2
+        type: string
+      password:
+        example: password123
+        maxLength: 100
+        minLength: 8
+        type: string
+      time_of_registration:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+    required:
+    - confirm_password
+    - email
+    - first_name
+    - last_name
+    - password
+    type: object
+  dto.UserInfo:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      first_name:
+        example: John
+        type: string
+      id:
+        example: 1
+        type: integer
+      last_name:
+        example: Doe
+        type: string
+    type: object
+  dto.UserProfile:
+    properties:
+      created_at:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+      email:
+        example: user@example.com
+        type: string
+      first_name:
+        example: John
+        type: string
+      last_name:
+        example: Doe
+        type: string
+    type: object
+  dto.UserStats:
+    properties:
+      monthly_expenses:
+        example: 450.75
+        type: number
+      total_budgets:
+        example: 3
+        type: integer
+      total_categories:
+        example: 5
+        type: integer
+      total_expenses:
+        example: 1250.5
+        type: number
+      weekly_expenses:
+        example: 125.25
+        type: number
+    type: object
+host: localhost:8081
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Система управления личными финансами
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Finance API
+  version: "1.0"
+paths:
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Деактивация refresh токена и выход из системы
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный выход
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Токен не найден
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Выход из системы
+      tags:
+      - Authentication
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Аутентификация пользователя и получение JWT токенов
+      parameters:
+      - description: Данные для входа
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная аутентификация
+          schema:
+            $ref: '#/definitions/dto.AuthResponse'
+        "400":
+          description: Неверные данные для входа
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Неверный email или пароль
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Вход в систему
+      tags:
+      - Authentication
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Создание нового аккаунта пользователя в системе
+      parameters:
+      - description: Данные для регистрации
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Пользователь успешно зарегистрирован
+          schema:
+            $ref: '#/definitions/dto.UserInfo'
+        "400":
+          description: Ошибка валидации данных
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "409":
+          description: Пользователь с таким email уже существует
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Регистрация нового пользователя
+      tags:
+      - Authentication
+  /categories:
+    get:
+      consumes:
+      - application/json
+      description: Получение всех категорий пользователя
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список категорий
+          schema:
+            $ref: '#/definitions/dto.CategoriesListResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получение списка категорий
+      tags:
+      - Categories
+    post:
+      consumes:
+      - application/json
+      description: Создание новой категории расходов для пользователя
+      parameters:
+      - description: Данные для создания категории
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Категория успешно создана
+          schema:
+            $ref: '#/definitions/dto.CategoryResponse'
+        "400":
+          description: Ошибка валидации данных
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Создание новой категории
+      tags:
+      - Categories
+  /categories/{category_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление категории и всех связанных с ней расходов
+      parameters:
+      - description: ID категории
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Категория успешно удалена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Неверный ID категории
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Удаление категории
+      tags:
+      - Categories
+    get:
+      consumes:
+      - application/json
+      description: Получение информации о конкретной категории пользователя
+      parameters:
+      - description: ID категории
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о категории
+          schema:
+            $ref: '#/definitions/dto.CategoryResponse'
+        "400":
+          description: Неверный ID категории
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Категория не найдена
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получение категории по ID
+      tags:
+      - Categories
+  /categories/{category_id}/analytics:
+    get:
+      consumes:
+      - application/json
+      description: Получение детальной аналитики расходов по конкретной категории
+      parameters:
+      - description: ID категории
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      - description: Период для анализа
+        in: body
+        name: period
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CategoryPeriod'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Аналитика по категории
+          schema:
+            $ref: '#/definitions/dto.CategoryAnalytics'
+        "400":
+          description: Неверный ID категории или период
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получение аналитики по категории
+      tags:
+      - Categories
+  /categories/{category_id}/budgets:
+    get:
+      consumes:
+      - application/json
+      description: Получение всех бюджетов пользователя для указанной категории
+      parameters:
+      - description: ID категории
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список бюджетов
+          schema:
+            $ref: '#/definitions/dto.BudgetsListResponse'
+        "400":
+          description: Неверный ID категории
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получение списка бюджетов
+      tags:
+      - Budgets
+    post:
+      consumes:
+      - application/json
+      description: Создание нового бюджета для указанной категории
+      parameters:
+      - description: ID категории
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      - description: Данные для создания бюджета
+        in: body
+        name: budget
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateBudgetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Бюджет успешно создан
+          schema:
+            $ref: '#/definitions/dto.BudgetResponse'
+        "400":
+          description: Ошибка валидации данных
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Создание нового бюджета
+      tags:
+      - Budgets
+  /categories/{category_id}/budgets/{budget_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление конкретного бюджета пользователя
+      parameters:
+      - description: ID категории
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      - description: ID бюджета
+        in: path
+        name: budget_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Бюджет успешно удален
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Неверный ID категории или бюджета
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Удаление бюджета
+      tags:
+      - Budgets
+  /categories/{category_id}/expenses:
+    get:
+      consumes:
+      - application/json
+      description: Получение всех расходов пользователя в указанной категории
+      parameters:
+      - description: ID категории
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список расходов
+          schema:
+            $ref: '#/definitions/dto.ExpensesListResponse'
+        "400":
+          description: Неверный ID категории
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получение списка расходов
+      tags:
+      - Expenses
+    post:
+      consumes:
+      - application/json
+      description: Создание нового расхода в указанной категории
+      parameters:
+      - description: ID категории
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      - description: Данные для создания расхода
+        in: body
+        name: expense
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateExpenseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Расход успешно создан
+          schema:
+            $ref: '#/definitions/dto.ExpenseResponse'
+        "400":
+          description: Ошибка валидации данных
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Создание нового расхода
+      tags:
+      - Expenses
+  /categories/{category_id}/expenses/{expense_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление конкретного расхода пользователя
+      parameters:
+      - description: ID категории
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      - description: ID расхода
+        in: path
+        name: expense_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Расход успешно удален
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Неверный ID категории или расхода
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Удаление расхода
+      tags:
+      - Expenses
+    get:
+      consumes:
+      - application/json
+      description: Получение информации о конкретном расходе
+      parameters:
+      - description: ID категории
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      - description: ID расхода
+        in: path
+        name: expense_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о расходе
+          schema:
+            $ref: '#/definitions/dto.ExpenseResponse'
+        "400":
+          description: Неверный ID категории или расхода
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получение расхода по ID
+      tags:
+      - Expenses
+  /categories/{category_id}/expenses/analytics:
+    post:
+      consumes:
+      - application/json
+      description: Получение аналитики расходов по категории за указанный период
+      parameters:
+      - description: ID категории
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      - description: Период для анализа
+        in: body
+        name: period
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ExpensePeriod'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Аналитика расходов
+          schema:
+            $ref: '#/definitions/dto.ExpenseAnalytics'
+        "400":
+          description: Неверный ID категории или период
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получение аналитики расходов
+      tags:
+      - Expenses
+  /categories/top:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка категорий, отсортированных по частоте использования
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список наиболее используемых категорий
+          schema:
+            $ref: '#/definitions/dto.CategoriesListResponse'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получение наиболее используемых категорий
+      tags:
+      - Categories
+  /user/account:
+    delete:
+      consumes:
+      - application/json
+      description: Полное удаление аккаунта пользователя и всех связанных данных
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Аккаунт успешно удален
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Удаление аккаунта пользователя
+      tags:
+      - User
+  /user/profile:
+    get:
+      consumes:
+      - application/json
+      description: Получение информации о текущем пользователе
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Профиль пользователя
+          schema:
+            $ref: '#/definitions/dto.UserProfile'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получение профиля пользователя
+      tags:
+      - User
+  /user/stats:
+    get:
+      consumes:
+      - application/json
+      description: Получение общей статистики по расходам, категориям и бюджетам
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Статистика пользователя
+          schema:
+            $ref: '#/definitions/dto.UserStats'
+        "401":
+          description: Требуется авторизация
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получение статистики пользователя
+      tags:
+      - User
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

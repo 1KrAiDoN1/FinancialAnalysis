@@ -1,1 +1,3 @@
 git ls-files | xargs wc -l
+echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.zshrc
+source ~/.zshrc

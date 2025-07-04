@@ -15,16 +15,6 @@ type CreateBudgetRequest struct {
 	//IsActive  bool      `json:"is_active" default:"true"`
 }
 
-// // UpdateBudgetRequest - обновление бюджета
-// type UpdateBudgetRequest struct {
-// 	//CategoryID uint       `json:"category_id" validate:"required"`
-// 	Amount *float64 `json:"amount,omitempty" validate:"omitempty,gt=0"`
-// 	Period *string  `json:"period,omitempty" validate:"omitempty,oneof=weekly monthly yearly"`
-// 	// StartDate time.Time `json:"start_date,omitempty"`
-// 	// EndDate   time.Time `json:"end_date,omitempty"`
-// 	// IsActive *bool `json:"is_active,omitempty"`
-// }
-
 // Ответы для бюджетов
 
 // BudgetResponse - информация о бюджете

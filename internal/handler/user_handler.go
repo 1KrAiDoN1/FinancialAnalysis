@@ -22,6 +22,17 @@ func NewUserHandler(userService services.UserServiceInterface) *UserHandler {
 	}
 }
 
+// GetProfile godoc
+// @Summary Получение профиля пользователя
+// @Description Получение информации о текущем пользователе
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} dto.UserProfile "Профиль пользователя"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /user/profile [get]
 func (h *UserHandler) GetProfile(c *gin.Context) {
 	log := logger.New("user_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -55,6 +66,17 @@ func (h *UserHandler) GetProfile(c *gin.Context) {
 	})
 }
 
+// DeleteAccount godoc
+// @Summary Удаление аккаунта пользователя
+// @Description Полное удаление аккаунта пользователя и всех связанных данных
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]string "Аккаунт успешно удален"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /user/account [delete]
 func (h *UserHandler) DeleteAccount(c *gin.Context) { // нужно придумать, как диактивировать токены, которые были выданы
 	log := logger.New("user_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -84,6 +106,17 @@ func (h *UserHandler) DeleteAccount(c *gin.Context) { // нужно придум
 
 }
 
+// GetStats godoc
+// @Summary Получение статистики пользователя
+// @Description Получение общей статистики по расходам, категориям и бюджетам
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} dto.UserStats "Статистика пользователя"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /user/stats [get]
 func (h *UserHandler) GetStats(c *gin.Context) {
 	log := logger.New("user_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)

@@ -23,6 +23,20 @@ func NewExpenseHandler(expenseService services.ExpenseServiceInterface) *Expense
 	}
 }
 
+// CreateExpense godoc
+// @Summary Создание нового расхода
+// @Description Создание нового расхода в указанной категории
+// @Tags Expenses
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param category_id path int true "ID категории"
+// @Param expense body dto.CreateExpenseRequest true "Данные для создания расхода"
+// @Success 200 {object} dto.ExpenseResponse "Расход успешно создан"
+// @Failure 400 {object} dto.ErrorResponse "Ошибка валидации данных"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories/{category_id}/expenses [post]
 func (h *ExpenseHandler) CreateExpense(c *gin.Context) {
 	log := logger.New("user_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -87,6 +101,20 @@ func (h *ExpenseHandler) CreateExpense(c *gin.Context) {
 
 }
 
+// GetExpense godoc
+// @Summary Получение расхода по ID
+// @Description Получение информации о конкретном расходе
+// @Tags Expenses
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param category_id path int true "ID категории"
+// @Param expense_id path int true "ID расхода"
+// @Success 200 {object} dto.ExpenseResponse "Информация о расходе"
+// @Failure 400 {object} dto.ErrorResponse "Неверный ID категории или расхода"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories/{category_id}/expenses/{expense_id} [get]
 func (h *ExpenseHandler) GetExpense(c *gin.Context) {
 	log := logger.New("user_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -151,6 +179,19 @@ func (h *ExpenseHandler) GetExpense(c *gin.Context) {
 
 }
 
+// GetExpenses godoc
+// @Summary Получение списка расходов
+// @Description Получение всех расходов пользователя в указанной категории
+// @Tags Expenses
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param category_id path int true "ID категории"
+// @Success 200 {object} dto.ExpensesListResponse "Список расходов"
+// @Failure 400 {object} dto.ErrorResponse "Неверный ID категории"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories/{category_id}/expenses [get]
 func (h *ExpenseHandler) GetExpenses(c *gin.Context) {
 	log := logger.New("user_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -197,6 +238,20 @@ func (h *ExpenseHandler) GetExpenses(c *gin.Context) {
 	})
 }
 
+// DeleteExpense godoc
+// @Summary Удаление расхода
+// @Description Удаление конкретного расхода пользователя
+// @Tags Expenses
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param category_id path int true "ID категории"
+// @Param expense_id path int true "ID расхода"
+// @Success 200 {object} map[string]string "Расход успешно удален"
+// @Failure 400 {object} dto.ErrorResponse "Неверный ID категории или расхода"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories/{category_id}/expenses/{expense_id} [delete]
 func (h *ExpenseHandler) DeleteExpense(c *gin.Context) {
 	log := logger.New("user_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
@@ -253,6 +308,20 @@ func (h *ExpenseHandler) DeleteExpense(c *gin.Context) {
 
 }
 
+// GetAnalytics godoc
+// @Summary Получение аналитики расходов
+// @Description Получение аналитики расходов по категории за указанный период
+// @Tags Expenses
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param category_id path int true "ID категории"
+// @Param period body dto.ExpensePeriod true "Период для анализа"
+// @Success 200 {object} dto.ExpenseAnalytics "Аналитика расходов"
+// @Failure 400 {object} dto.ErrorResponse "Неверный ID категории или период"
+// @Failure 401 {object} dto.ErrorResponse "Требуется авторизация"
+// @Failure 500 {object} dto.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /categories/{category_id}/expenses/analytics [post]
 func (h *ExpenseHandler) GetAnalytics(c *gin.Context) {
 	log := logger.New("user_handler", true)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)

@@ -16,6 +16,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -25,11 +27,6 @@ type Server struct {
 
 func NewServer(container *container.Container) *Server {
 	router := gin.Default()
-
-	// Global middleware
-	// router.Use(middleware.CORS())
-	// router.Use(middleware.Logger())
-	// router.Use(middleware.ErrorHandler())
 
 	return &Server{
 		container: container,
@@ -91,6 +88,7 @@ func (s *Server) Run() error {
 }
 
 func (s *Server) setupRoutes() {
+	s.router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	api := s.router.Group("/api/v1")
 
 	// Public routes
