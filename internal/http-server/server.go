@@ -7,6 +7,7 @@ import (
 	"finance/internal/container"
 	"finance/internal/middleware"
 	"finance/internal/routes"
+	"finance/pkg/logger"
 	"fmt"
 	"net/http"
 	"os"
@@ -37,6 +38,7 @@ func NewServer(container *container.Container) *Server {
 }
 
 func (s *Server) Run() error {
+	log := logger.New("http-server", true)
 	s.setupRoutes()
 	serverPort, err := config.LoadConfigServer("./internal/config/config.yaml")
 	if err != nil {
@@ -46,7 +48,9 @@ func (s *Server) Run() error {
 	// Канал для ошибок сервера
 	serverErr := make(chan error, 1)
 	go func() {
-		fmt.Printf("Starting server on port %s\n", serverPort.Port)
+		log.Info("Starting server", map[string]interface{}{
+			"port": serverPort.Port,
+		})
 		if err := s.router.Run(":" + serverPort.Port); err != nil {
 			serverErr <- fmt.Errorf("server error: %w", err)
 		}
@@ -62,7 +66,10 @@ func (s *Server) Run() error {
 	case err := <-serverErr:
 		return err
 	case sig := <-quit:
-		fmt.Printf("Received signal: %s. Shutting down...\n", sig)
+		log.Info("Shutting down...", map[string]interface{}{
+			"Received signal": sig,
+		})
+
 		// Получаем доступ к внутреннему http.Server
 		srv := &http.Server{
 			Addr:    ":" + serverPort.Port,
@@ -73,10 +80,11 @@ func (s *Server) Run() error {
 		defer cancel()
 
 		if err := srv.Shutdown(ctx); err != nil {
-			return fmt.Errorf("server shutdown failed: %w", err)
+			log.Error("server shutdown failed", map[string]interface{}{
+				"error": logger.PrettyPrint(err),
+			})
 		}
-
-		fmt.Println("Server gracefully stopped")
+		log.Info("Server gracefully stopped", nil)
 		return nil
 	}
 

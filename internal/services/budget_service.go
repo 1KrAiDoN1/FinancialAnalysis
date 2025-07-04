@@ -84,32 +84,6 @@ func (b *BudgetService) GetUserBudgets(ctx context.Context, userID uint, categor
 	return budgetResponses, nil
 }
 
-// func (b *BudgetService) UpdateBudget(ctx context.Context, userID uint, category_id int, budgetID int, req dto.UpdateBudgetRequest) error {
-// 	existingBudget, err := b.repo.GetBudgetByID(ctx, userID, category_id, budgetID)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	// Проверяем права доступа
-// 	if existingBudget.UserID != userID {
-// 		return errors.New("budget not found or access denied")
-// 	}
-
-// 	// Создаем объект для обновления
-// 	updateData := models.Budget{
-// 		ID:         uint(budgetID),
-// 		UserID:     userID,
-// 		CategoryID: uint(category_id),
-// 		Amount:     *req.Amount,
-// 		Period:     *req.Period,
-// 		StartDate:  req.StartDate,
-// 		EndDate:    req.EndDate,
-// 	}
-
-// 	// Обновляем через репозиторий
-// 	return b.repo.UpdateBudget(ctx, updateData)
-// }
-
 func (b *BudgetService) DeleteBudget(ctx context.Context, userID uint, category_id int, budgetID int) error {
 	return b.repo.DeleteBudget(ctx, userID, category_id, budgetID)
 }

@@ -2,7 +2,6 @@ package container
 
 import (
 	"context"
-	"log"
 
 	//"finance/internal/config"
 	"finance/internal/handler"
@@ -10,6 +9,7 @@ import (
 	"finance/internal/services"
 	storage "finance/internal/storages"
 	"finance/internal/storages/database"
+	"finance/pkg/logger"
 )
 
 type Container struct {
@@ -22,6 +22,7 @@ type Container struct {
 }
 
 func NewContainer() (*Container, error) {
+	log := logger.New("container", true)
 	ctx := context.Background()
 	// Load config
 	databaseURL, err := database.NewDatabaseURL()
@@ -32,6 +33,9 @@ func NewContainer() (*Container, error) {
 	// Initialize database
 	DB, err := database.NewDatabase(ctx, databaseURL)
 	if err != nil {
+		log.Fatal("Error initialization database", map[string]interface{}{
+			"error": err,
+		})
 		return nil, err
 	}
 	dbpool := DB.GetPool()
@@ -51,9 +55,12 @@ func NewContainer() (*Container, error) {
 }
 
 func (c *Container) Close() {
+	log := logger.New("container", true)
 	if c.DB != nil {
 		if err := c.DB.Close(); err != nil {
-			log.Printf("Error closing database: %v", err)
+			log.Error("Error closing database", map[string]interface{}{
+				"error": err,
+			})
 		}
 	}
 }

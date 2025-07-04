@@ -1,8 +1,8 @@
 package config
 
 import (
+	"finance/pkg/logger"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -18,9 +18,12 @@ type Config struct {
 }
 
 func SetConfig() (Config, error) {
+	log := logger.New("config", true)
 	err := godotenv.Load("./internal/storages/database/DB_Config.env")
 	if err != nil {
-		log.Println("Ошибка при чтении конфигурации базы данных")
+		log.Fatal("Loading Config failed", map[string]interface{}{
+			"error": err,
+		})
 		return Config{}, err
 	}
 	DB_config_path := Config{DB_username: os.Getenv("DB_USER"), DB_password: os.Getenv("DB_PASSWORD"), DB_host: os.Getenv("DB_HOST"), DB_port: os.Getenv("DB_PORT"), DB_name: os.Getenv("DB_NAME")}
@@ -32,14 +35,21 @@ type ConfigServer struct {
 }
 
 func LoadConfigServer(configPath string) (*ConfigServer, error) {
+	log := logger.New("config", true)
 	data, err := os.ReadFile(configPath)
 	if err != nil {
+		log.Fatal("Reading Config file failed", map[string]interface{}{
+			"error": err,
+		})
 		return nil, fmt.Errorf("не удалось прочитать файл %s: %w", configPath, err)
 	}
 
 	var port ConfigServer
 	err = yaml.Unmarshal(data, &port)
 	if err != nil {
+		log.Fatal("Parsing YAML failed", map[string]interface{}{
+			"error": err,
+		})
 		return nil, fmt.Errorf("не удалось распарсить YAML: %w", err)
 	}
 
