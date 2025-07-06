@@ -1,0 +1,55 @@
+services:
+  finance_app:
+    build: .
+    ports:
+      - "8081:8081"  # Пробрасываем порт приложения
+    env_file:
+      - .env  # Используем переменные из .env файла
+    environment:
+      - DB_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - DB_HOST=db  # Переопределяем хост БД для docker
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./migrations:/finance_app/migrations
+      - ./internal/config:/finance_app/internal/config
+      - ./.env:/finance_app/.env
+    restart: unless-stopped
+    command: >
+      sh -c "
+      echo 'Applying migrations...';
+      if ! migrate -path /finance_app/migrations -database $${DB_URL} up; then
+        echo 'Migration failed, forcing version 1';
+        migrate -path /finance_app/migrations -database $${DB_URL} force 1;
+        migrate -path /finance_app/migrations -database $${DB_URL} up;
+      fi;
+      echo 'Starting application...';
+      exec ./finance-app
+      "
+
+
+  db:
+    image: postgres:15-alpine
+    env_file:
+      - .env  # Используем те же переменные
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"  # Проброс порта БД для локального подключения
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
