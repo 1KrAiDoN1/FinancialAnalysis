@@ -1,5 +1,0 @@
-DROP TABLE IF EXISTS refresh_tokens;
-DROP TABLE IF EXISTS budgets;
-DROP TABLE IF EXISTS expenses;
-DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS users;
