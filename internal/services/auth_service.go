@@ -118,7 +118,7 @@ func (a *AuthService) GenerateAccessToken(userID int) (dto.AccessTokenRequest, e
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(JWTokenTTL)),
 	})
-	err := godotenv.Load("./internal/storages/database/hash.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal(err)
 		return dto.AccessTokenRequest{}, fmt.Errorf("failed to load environment file: %w", err)
@@ -139,7 +139,7 @@ func (a *AuthService) GenerateAccessToken(userID int) (dto.AccessTokenRequest, e
 
 func (a *AuthService) ValidateToken(ctx context.Context, req dto.AccessTokenRequest) (*dto.UserID, error) {
 
-	err := godotenv.Load("./internal/storages/database/hash.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		return &dto.UserID{}, fmt.Errorf("failed to load environment file: %w", err)
 	}
@@ -182,7 +182,7 @@ func (a *AuthService) ValidateToken(ctx context.Context, req dto.AccessTokenRequ
 
 func HashPassword(Password string) (string, error) {
 	hash := sha1.New()
-	err := godotenv.Load("./internal/storages/database/hash.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal(err)
 		return "", err

@@ -19,7 +19,7 @@ type Config struct {
 
 func SetConfig() (Config, error) {
 	log := logger.New("config", true)
-	err := godotenv.Load("./internal/storages/database/DB_Config.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Loading Config failed", map[string]interface{}{
 			"error": err,
