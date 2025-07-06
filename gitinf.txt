@@ -1,3 +1,6 @@
 git ls-files | xargs wc -l
 echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.zshrc
 source ~/.zshrc
+go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+migrate create -ext sql -dir ./migrations -seq finance_db
+docker-compose exec db psql -U postgres -d finance_app -c "SELECT * FROM users;"
