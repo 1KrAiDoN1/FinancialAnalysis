@@ -104,5 +104,3 @@ http://localhost:8081
 Swagger-документация проекта:
 http://localhost:8081/swagger/index.html
 ```
-
-
