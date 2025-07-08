@@ -31,7 +31,7 @@ func main() {
 
 	container, err := container.NewContainer()
 	if err != nil {
-		log.Fatal("Failed to initialize container", map[string]interface{}{
+		log.Fatal("Failed to initialize container", map[string]string{
 			"error": err.Error(),
 			"stack": logger.PrettyPrint(err),
 		})
@@ -41,7 +41,7 @@ func main() {
 	// Initialize and start server
 	srv := server.NewServer(container)
 	if err := srv.Run(); err != nil {
-		log.Fatal("Failed to start server", map[string]interface{}{
+		log.Fatal("Failed to start server", map[string]string{
 			"error": err.Error(),
 			"stack": logger.PrettyPrint(err),
 		})

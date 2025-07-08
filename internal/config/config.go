@@ -21,8 +21,8 @@ func SetConfig() (Config, error) {
 	log := logger.New("config", true)
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Loading Config failed", map[string]interface{}{
-			"error": err,
+		log.Fatal("Loading Config failed", map[string]string{
+			"error": err.Error(),
 		})
 		return Config{}, err
 	}
@@ -38,8 +38,8 @@ func LoadConfigServer(configPath string) (*ConfigServer, error) {
 	log := logger.New("config", true)
 	data, err := os.ReadFile(configPath)
 	if err != nil {
-		log.Fatal("Reading Config file failed", map[string]interface{}{
-			"error": err,
+		log.Fatal("Reading Config file failed", map[string]string{
+			"error": err.Error(),
 		})
 		return nil, fmt.Errorf("не удалось прочитать файл %s: %w", configPath, err)
 	}
@@ -47,8 +47,8 @@ func LoadConfigServer(configPath string) (*ConfigServer, error) {
 	var port ConfigServer
 	err = yaml.Unmarshal(data, &port)
 	if err != nil {
-		log.Fatal("Parsing YAML failed", map[string]interface{}{
-			"error": err,
+		log.Fatal("Parsing YAML failed", map[string]string{
+			"error": err.Error(),
 		})
 		return nil, fmt.Errorf("не удалось распарсить YAML: %w", err)
 	}

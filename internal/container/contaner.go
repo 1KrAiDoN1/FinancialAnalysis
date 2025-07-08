@@ -33,8 +33,8 @@ func NewContainer() (*Container, error) {
 	// Initialize database
 	DB, err := database.NewDatabase(ctx, databaseURL)
 	if err != nil {
-		log.Fatal("Error initialization database", map[string]interface{}{
-			"error": err,
+		log.Fatal("Error initialization database", map[string]string{
+			"error": err.Error(),
 		})
 		return nil, err
 	}

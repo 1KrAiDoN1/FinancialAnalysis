@@ -129,7 +129,7 @@ func (l *Logger) Error(msg string, fields map[string]interface{}) {
 		Msg(msg)
 }
 
-func (l *Logger) Fatal(msg string, fields map[string]interface{}) {
+func (l *Logger) Fatal(msg string, fields map[string]string) {
 	funcName, caller := getCallerInfo()
 	l.logger.Fatal().
 		Str("func", funcName).
